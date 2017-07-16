@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>oneDream订餐</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css"/>
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css"/>
+
+</head>
+<body>
+<div class="content">
+    <div class="buttons-tab">
+        <a href="#tab1" class="tab-link active button">订餐</a>
+        <a href="#tab2" class="tab-link button">查看</a>
+        <a href="#tab3" class="tab-link button">统计</a>
+    </div>
+    <div class="content-block">
+        <div class="tabs">
+            <div id="tab1" class="tab active">
+                <form action="/orderDo" method="post">
+                    <div class="list-block">
+                        <ul>
+                            <!-- Text inputs -->
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media"><i class="icon icon-form-calendar"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title label">日期</div>
+                                        <div class="item-input">
+                                            <input name="orderDate" type="date" placeholder="Birth day"
+                                                   th:value="${tomorrow}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media"><i class="icon icon-form-toggle"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title label">午餐</div>
+                                        <div class="item-input">
+                                            <label class="label-switch">
+                                                <input name="lunch" type="checkbox" value="1" checked="true"/>
+                                                <div class="checkbox"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- Switch (Checkbox) -->
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media"><i class="icon icon-form-toggle"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title label">晚餐</div>
+                                        <div class="item-input">
+                                            <label class="label-switch">
+                                                <input name="dinner" type="checkbox" value="1" checked="true"/>
+                                                <div class="checkbox"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                    <div class="content-block">
+                        <div class="row">
+                            <button type="submit" class="col-100 button button-big button-fill button-success">提交
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div id="tab2" class="tab">
+                <div class="content-block">
+
+                    <div class="list-block">
+                        <ul>
+                            <li class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">日期</div>
+                                    <div class="item-middle">午餐</div>
+                                    <div class="item-after">晚餐</div>
+                                </div>
+                            </li>
+                            <li class="item-content" th:each="booking:${bookings}">
+                                <div class="item-inner">
+                                    <div class="item-title"><span th:text="${#dates.format(booking.orderDate, 'yyyy-MM-dd')}"></span></div>
+                                    <div class="item-middle"><span th:text="${booking.lunch}"></span></div>
+                                    <div class="item-after"><span th:text="${booking.dinner}"></span></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="tab3" class="tab">
+                <div class="content-block">
+                    <div class="content-block-title"><span th:text="${tomorrow}"></span>统计情况</div>
+                    <div class="list-block">
+                        <ul>
+                            <li class="item-content">
+                                <div class="item-media"><i class="icon icon-f7"></i></div>
+                                <div class="item-inner">
+                                    <div class="item-title">点餐人数</div>
+                                    <div class="item-after"><span th:text="${userCount}"/></div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-media"><i class="icon icon-f7"></i></div>
+                                <div class="item-inner">
+                                    <div class="item-title">午餐预定数量</div>
+                                    <div class="item-after"><span th:text="${lunchCount}"/></div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-media"><i class="icon icon-f7"></i></div>
+                                <div class="item-inner">
+                                    <div class="item-title">晚餐预定数量</div>
+                                    <div class="item-after"><span th:text="${dinnerCount}"/></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    <div class="content-block-title"><span th:text="${tomorrow}"></span>具体名单</div>
+                    <div class="content-block">
+
+                        <div class="list-block">
+                            <ul>
+                                <li class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">姓名</div>
+                                        <div class="item-middle">午餐</div>
+                                        <div class="item-after">晚餐</div>
+                                    </div>
+                                </li>
+
+                                <li class="item-content" th:each="booking:${tomorrowUser}">
+                                    <div class="item-inner">
+                                        <div class="item-title"><span th:text="${booking.userName}"></span></div>
+                                        <div class="item-middle"><span th:text="${booking.lunch}"></span></div>
+                                        <div class="item-after"><span th:text="${booking.dinner}"></span></div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+
+</body>
+
+</html>
