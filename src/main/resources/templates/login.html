@@ -11,6 +11,23 @@
 
     <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css"/>
     <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css"/>
+
+    <script>
+        function login_clk() {
+            var userName = document.getElementById('userName').value;
+            var department = document.getElementById('department').value;
+
+            if(!window.localStorage){
+                alert("浏览器支持localstorage");
+                return false;
+            }else{
+                var storage=window.localStorage;
+                storage.userName=userName;
+                storage.department=department;
+            }
+
+        }
+    </script>
 </head>
 <body>
 
@@ -25,7 +42,7 @@
                         <div class="item-inner">
                             <div class="item-title label">姓名</div>
                             <div class="item-input">
-                                <input type="text" name="userName" placeholder="Your name"/>
+                                <input id="userName" type="text" name="userName" placeholder="Your name"/>
                             </div>
                         </div>
                     </div>
@@ -38,7 +55,7 @@
                         <div class="item-inner">
                             <div class="item-title label">部门</div>
                             <div class="item-input">
-                                <input type="text" name="department" placeholder="Your department"/>
+                                <input id="department" type="text" name="department" placeholder="Your department"/>
                             </div>
                         </div>
                     </div>
@@ -48,10 +65,12 @@
         </div>
         <div class="content-block">
             <div class="row">
-                <button type="submit" class="col-100 button button-big button-fill button-success">提交</button>
+                <button onclick="login_clk()" class="col-100 button button-big button-fill button-success">提交</button>
             </div>
         </div>
     </div>
+
+
 </form>
 
 </body>

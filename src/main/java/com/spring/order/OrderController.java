@@ -28,23 +28,18 @@ public class OrderController {
 
     @RequestMapping(value = "/order", method = RequestMethod.GET)
     public String index(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
-        Cookie cookieUserName = getCookieByName(httpRequest, cookieName_userName);
-        Cookie cookieDepartment = getCookieByName(httpRequest, cookieName_department);
 
-        if (cookieUserName == null || cookieDepartment == null) {
-            return "login";
+        String userName = getParam(httpRequest, cookieName_userName);
+        String department = getParam(httpRequest, cookieName_department);
+
+        if (!StringUtils.isEmpty(userName) && !StringUtils.isEmpty(department)) {
+            List<Booking> bookings = orderService.getByUserName(userName, department).stream()
+                    .filter(p -> p.getOrderDate().after(new Date()))
+                    .collect(Collectors.toList());
+            model.addAttribute("bookings", bookings);
+
         }
 
-        String userName = cookieUserName.getValue();
-        String department = cookieDepartment.getValue();
-
-        if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(department)) {
-            return "login";
-        }
-
-        List<Booking> bookings = orderService.getByUserName(userName, department).stream()
-                .filter(p -> p.getOrderDate().after(new Date()))
-                .collect(Collectors.toList());
 
         String tomorrowStr = tomorrow();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
@@ -59,7 +54,6 @@ public class OrderController {
             dinnerCount += booking.getDinner();
         }
 
-        model.addAttribute("bookings", bookings);
 
         model.addAttribute("tomorrow", tomorrowStr);
 
@@ -92,16 +86,8 @@ public class OrderController {
         String dinnerStr = httpRequest.getParameter("dinner");
         int dinner = Integer.valueOf(dinnerStr == null ? "0" : dinnerStr);
 
-
-        Cookie cookieUserName = getCookieByName(httpRequest, cookieName_userName);
-        Cookie cookieDepartment = getCookieByName(httpRequest, cookieName_department);
-
-        if (cookieUserName == null || cookieDepartment == null) {
-            return "login";
-        }
-
-        String userName = cookieUserName.getValue();
-        String department = cookieDepartment.getValue();
+        String userName = getParam(httpRequest, cookieName_userName);
+        String department = getParam(httpRequest, cookieName_department);
 
 
         if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(department)) {
@@ -142,7 +128,7 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/loginDo", method = RequestMethod.POST)
-    public String login(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws IOException {
+    public String login(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
         String userName = httpRequest.getParameter("userName");
         String department = httpRequest.getParameter("department");
 
@@ -153,7 +139,10 @@ public class OrderController {
         model.addAttribute("text", "注册成功");
         model.addAttribute("button", "开始点餐");
 
-        return "success";
+        model.addAttribute("userName", userName);
+        model.addAttribute("department", department);
+
+        return index(httpRequest, httpServletResponse, model);
     }
 
 
@@ -238,6 +227,19 @@ public class OrderController {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private String getParam(HttpServletRequest httpRequest, String key) {
+        String userName = httpRequest.getParameter(key);
+        if (userName != null) {
+            return userName;
+        }
+
+        Cookie cookieUserName = getCookieByName(httpRequest, key);
+        if (cookieUserName != null) {
+            return cookieUserName.getValue();
+        }
+        return null;
     }
 
 }

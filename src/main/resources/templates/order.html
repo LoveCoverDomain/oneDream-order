@@ -14,6 +14,9 @@
 
 </head>
 <body>
+<input type="hidden" name="userName" id="userName"/>
+<input type="hidden" name="department" id="department"/>
+
 <div class="content">
     <div class="buttons-tab">
         <a href="#tab1" class="tab-link active button">订餐</a>
@@ -76,7 +79,7 @@
                     </div>
                     <div class="content-block">
                         <div class="row">
-                            <button type="submit" class="col-100 button button-big button-fill button-success">提交
+                            <button onclick="login_clk()" class="col-100 button button-big button-fill button-success">提交
                             </button>
                         </div>
                     </div>
@@ -97,7 +100,8 @@
                             </li>
                             <li class="item-content" th:each="booking:${bookings}">
                                 <div class="item-inner">
-                                    <div class="item-title"><span th:text="${#dates.format(booking.orderDate, 'yyyy-MM-dd')}"></span></div>
+                                    <div class="item-title"><span
+                                            th:text="${#dates.format(booking.orderDate, 'yyyy-MM-dd')}"></span></div>
                                     <div class="item-middle"><span th:text="${booking.lunch}"></span></div>
                                     <div class="item-after"><span th:text="${booking.dinner}"></span></div>
                                 </div>
@@ -171,6 +175,19 @@
 <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+
+<script>
+    function login_clk() {
+        if (!window.localStorage) {
+            alert("浏览器支持localstorage");
+            return false;
+        } else {
+            var storage = window.localStorage;
+            document.getElementById('userName').value=storage.userName ;
+            document.getElementById('department').value=storage.department;
+        }
+    }
+</script>
 
 </body>
 
