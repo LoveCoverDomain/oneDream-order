@@ -32,19 +32,17 @@ public class OrderController {
         String userName = getParam(httpRequest, cookieName_userName);
         String department = getParam(httpRequest, cookieName_department);
 
-        if (!StringUtils.isEmpty(userName) && !StringUtils.isEmpty(department)) {
-            List<Booking> bookings = orderService.getByUserName(userName, department).stream()
-                    .filter(p -> p.getOrderDate().after(new Date()))
-                    .collect(Collectors.toList());
-            model.addAttribute("bookings", bookings);
-
+        if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(department)) {
+            return "login";
         }
-
 
         String tomorrowStr = tomorrow();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
-
         List<Booking> bookings1 = orderService.getOrdersByDate(sdf.parse(tomorrowStr));
+
+        List<Booking> bookings = orderService.getByUserName(userName, department).stream()
+                .filter(p -> p.getOrderDate().after(new Date()))
+                .collect(Collectors.toList());
 
         int lunchCount = 0;
         int dinnerCount = 0;
@@ -54,6 +52,7 @@ public class OrderController {
             dinnerCount += booking.getDinner();
         }
 
+        model.addAttribute("bookings", bookings);
 
         model.addAttribute("tomorrow", tomorrowStr);
 
