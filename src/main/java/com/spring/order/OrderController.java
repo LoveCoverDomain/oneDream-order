@@ -173,7 +173,7 @@ public class OrderController {
         Sign sign = new Sign(userName, department, new Date(), lunch, dinner);
         signService.create(sign);
 
-        model.addAttribute("text", text + "签到成功");
+        model.addAttribute("text", text + " 签到成功");
         model.addAttribute("button", "返回,点击\"查看\"可查阅订餐结果");
 
         return "success";
