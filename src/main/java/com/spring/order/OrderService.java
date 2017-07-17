@@ -29,13 +29,6 @@ public class OrderService {
         return orderRepository.findByUserNameAndDepartmentAndOrderDate(userName, department, orderDate);
     }
 
-
-    public List<Booking> getAllOrders() {
-        List<Booking> bookings = new ArrayList<>();
-        orderRepository.findAll().forEach(bookings::add);
-        return bookings;
-    }
-
     public void createOrder(Booking booking) {
         orderRepository.save(booking);
     }
@@ -44,7 +37,4 @@ public class OrderService {
         orderRepository.save(booking);
     }
 
-    public void deleteOrder(int order_id) {
-        orderRepository.delete(order_id);
-    }
 }

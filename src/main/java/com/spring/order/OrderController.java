@@ -27,10 +27,11 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private SignService signService;
 
     @RequestMapping(value = "/order", method = RequestMethod.GET)
     public String index(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
-
         String userName = getParam(httpRequest, cookieName_userName);
         String department = getParam(httpRequest, cookieName_department);
 
@@ -65,6 +66,7 @@ public class OrderController {
         model.addAttribute("dinnerCount", dinnerCount);
 
         model.addAttribute("tomorrowUser", bookings1);
+
 
         return "order";
     }
@@ -116,14 +118,14 @@ public class OrderController {
         } catch (Exception e) {
             if (e.getMessage().contains("uk_user_orderdate")) {
                 model.addAttribute("text", "订餐成功");
-                model.addAttribute("button", "返回");
+                model.addAttribute("button", "返回,点击\"查看\"可查阅订餐结果");
                 return "success";
             }
-
+            throw e;
         }
 
         model.addAttribute("text", "订餐成功");
-        model.addAttribute("button", "返回");
+        model.addAttribute("button", "返回,点击\"查看\"可查阅订餐结果");
 
         return "success";
     }
@@ -142,6 +144,37 @@ public class OrderController {
 
         model.addAttribute("userName", userName);
         model.addAttribute("department", department);
+
+        return "success";
+    }
+
+    @RequestMapping(value = "/sign", method = RequestMethod.GET)
+    public String sign(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
+        String userName = getParam(httpRequest, cookieName_userName);
+        String department = getParam(httpRequest, cookieName_department);
+
+        if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(department)) {
+            return "login";
+        }
+
+        int hour = getNowOfHour();
+        int lunch = 0;
+        int dinner = 0;
+        String text = "";
+        if (hour >= 11 && hour <= 14) {
+            lunch = 1;
+            text = "午餐";
+        }
+        if (hour > 16 && hour <= 20) {
+            dinner = 1;
+            text = "晚餐";
+        }
+
+        Sign sign = new Sign(userName, department, new Date(), lunch, dinner);
+        signService.create(sign);
+
+        model.addAttribute("text", text + "签到成功");
+        model.addAttribute("button", "返回,点击\"查看\"可查阅订餐结果");
 
         return "success";
     }
@@ -205,6 +238,14 @@ public class OrderController {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = formatter.format(date);
         return dateString;
+    }
+
+    private int getNowOfHour() {
+        Date now = new Date();
+
+        int hour = now.getHours();
+
+        return hour;
     }
 
     private boolean isTodayAfterClock(int clock) {

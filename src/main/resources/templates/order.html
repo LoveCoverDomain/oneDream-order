@@ -14,11 +14,9 @@
 
 </head>
 <body>
-<input type="hidden" name="userName" id="userName"/>
-<input type="hidden" name="department" id="department"/>
 
 <div class="content">
-    <div class="buttons-tab">
+    <div class="buttons-tab" >
         <a href="#tab1" class="tab-link active button">订餐</a>
         <a href="#tab2" class="tab-link button">查看</a>
         <a href="#tab3" class="tab-link button">统计</a>
@@ -27,6 +25,8 @@
         <div class="tabs">
             <div id="tab1" class="tab active">
                 <form action="/orderDo" method="post">
+                    <input type="hidden" name="userName" id="userName"/>
+                    <input type="hidden" name="department" id="department"/>
                     <div class="list-block">
                         <ul>
                             <!-- Text inputs -->
