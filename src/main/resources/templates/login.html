@@ -22,8 +22,8 @@
                 return false;
             }else{
                 var storage=window.localStorage;
-                storage.userName=userName;
-                storage.department=department;
+                storage.userName=encodeURI(userName);
+                storage.department=encodeURI(department);
             }
 
         }

@@ -10,6 +10,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -141,7 +143,7 @@ public class OrderController {
         model.addAttribute("userName", userName);
         model.addAttribute("department", department);
 
-        return index(httpRequest, httpServletResponse, model);
+        return "success";
     }
 
 
@@ -153,7 +155,8 @@ public class OrderController {
      * @param value
      */
     public void addCookie(HttpServletResponse response, String name, String value) {
-        Cookie cookie = new Cookie(name.trim(), value.trim());
+        String valueEn = URLEncoder.encode(value.trim());
+        Cookie cookie = new Cookie(name.trim(), valueEn);
         cookie.setMaxAge(10 * 366 * 24 * 60 * 60);// 设置为30min
         cookie.setPath("/");
         response.addCookie(cookie);
@@ -236,7 +239,7 @@ public class OrderController {
 
         Cookie cookieUserName = getCookieByName(httpRequest, key);
         if (cookieUserName != null) {
-            return cookieUserName.getValue();
+            return URLDecoder.decode(cookieUserName.getValue());
         }
         return null;
     }

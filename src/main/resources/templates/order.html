@@ -183,8 +183,8 @@
             return false;
         } else {
             var storage = window.localStorage;
-            document.getElementById('userName').value=storage.userName ;
-            document.getElementById('department').value=storage.department;
+            document.getElementById('userName').value= decodeURI(storage.userName) ;
+            document.getElementById('department').value=decodeURI(storage.department);
         }
     }
 </script>
