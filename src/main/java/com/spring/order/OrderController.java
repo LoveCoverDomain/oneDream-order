@@ -55,6 +55,10 @@ public class OrderController {
             dinnerCount += booking.getDinner();
         }
 
+        if (dinnerCount > 0) {
+            dinnerCount = dinnerCount + 3;
+        }
+
         model.addAttribute("bookings", bookings);
 
         model.addAttribute("tomorrow", tomorrowStr);
@@ -98,7 +102,7 @@ public class OrderController {
         }
 
         if (isTodayAfterClock(16) && tomorrow().equals(orderDate)) {
-            model.addAttribute("text", "时间超过了下午4点，不能再点餐");
+            model.addAttribute("text", "时间超过了下午4点，不能再点餐了");
             model.addAttribute("button", "继续点餐");
 
             return "success";
