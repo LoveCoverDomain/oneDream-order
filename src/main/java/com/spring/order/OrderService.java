@@ -25,12 +25,15 @@ public class OrderService {
         return bookings;
     }
 
-    public List<Booking> getByUserName(String userName, String department,Date orderDate) {
+    public List<Booking> getByUserName(String userName, String department, Date orderDate) {
         List<Booking> bookings = new ArrayList<>();
-        orderRepository.findByUserNameAndDepartmentAndOrderDateGreaterThanOrderByOrderDateDesc(userName, department,orderDate).forEach(bookings::add);
+        orderRepository.findByUserNameAndDepartmentAndOrderDateGreaterThanOrderByOrderDateDesc(userName, department, orderDate).forEach(bookings::add);
         return bookings;
     }
 
+    public List<DateCount> getCount(Date orderDate) {
+        return orderRepository.getOrderCount(orderDate);
+    }
 
     public Booking getByUserNameAndOrderDate(String userName, String department, Date orderDate) {
         return orderRepository.findByUserNameAndDepartmentAndOrderDate(userName, department, orderDate);

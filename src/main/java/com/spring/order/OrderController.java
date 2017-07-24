@@ -225,6 +225,36 @@ public class OrderController {
         return "sign";
     }
 
+    @RequestMapping(value = "/statistics", method = RequestMethod.GET)
+    private String statistics(Model model) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+
+        List<DateCount> result = orderService.getCount(sdf.parse(today()));
+
+        Map<Date, Long> signLunchMap = signService.getLunchCount(sdf.parse(today())).stream()
+                .collect(Collectors.toMap(DateCount::getDate, DateCount::getCount));
+
+        Map<Date, Long> signDinnerMap = signService.getDinnerCount(sdf.parse(today())).stream()
+                .collect(Collectors.toMap(DateCount::getDate, DateCount::getCount));
+
+        for (DateCount dateCount : result) {
+            Long signLunch = signLunchMap.get(dateCount.getDate());
+            Long signDinner = signDinnerMap.get(dateCount.getDate());
+
+            if (dateCount.getDinnerCount() > 0) {
+                dateCount.setDinnerCount(dateCount.getDinnerCount() + 3);
+            }
+
+            dateCount.setSignLunchCount(signLunch == null ? 0 : signLunch);
+            dateCount.setSignDinnerCount(signDinner == null ? 0 : signDinner + 3);
+        }
+
+        model.addAttribute("result", result);
+
+        return "statistics";
+    }
+
+
     private boolean isSign(String userName, String department, int lunch, int dinner) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
         boolean signed = false;

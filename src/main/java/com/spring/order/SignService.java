@@ -31,7 +31,15 @@ public class SignService {
 
     public List<Sign> getByUserNameAndSignTime(String userName, String department, Date signTime) {
         List<Sign> signs = new ArrayList<>();
-        signRepository.findByUserNameAndDepartmentAndSignTime(userName, department,signTime).forEach(signs::add);
+        signRepository.findByUserNameAndDepartmentAndSignTime(userName, department, signTime).forEach(signs::add);
         return signs;
+    }
+
+    public List<DateCount> getLunchCount(Date signTime) {
+        return signRepository.getLunchCount(signTime);
+    }
+
+    public List<DateCount> getDinnerCount(Date signTime) {
+        return signRepository.getDinnerCount(signTime);
     }
 }
