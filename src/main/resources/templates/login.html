@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <title>oneDream订餐</title>
+    <title>OneDream订餐</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
     <link rel="shortcut icon" href="/favicon.ico"/>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -17,13 +17,13 @@
             var userName = document.getElementById('userName').value;
             var department = document.getElementById('department').value;
 
-            if(!window.localStorage){
+            if (!window.localStorage) {
                 alert("浏览器支持localstorage");
                 return false;
-            }else{
-                var storage=window.localStorage;
-                storage.userName=encodeURI(userName);
-                storage.department=encodeURI(department);
+            } else {
+                var storage = window.localStorage;
+                storage.userName = encodeURI(userName);
+                storage.department = encodeURI(department);
             }
 
         }
@@ -65,7 +65,7 @@
         </div>
         <div class="content-block">
             <div class="row">
-                <button onclick="login_clk()" class="col-100 button button-big button-fill button-success">提交</button>
+                <button class="col-100 button button-big button-fill button-success">提交</button>
             </div>
         </div>
     </div>

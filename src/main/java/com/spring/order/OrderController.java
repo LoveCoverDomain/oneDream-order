@@ -32,20 +32,20 @@ public class OrderController {
 
     @RequestMapping(value = "/order", method = RequestMethod.GET)
     public String index(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
-        String userName = getParam(httpRequest, cookieName_userName);
-        String department = getParam(httpRequest, cookieName_department);
+        String userName = getParamByCookie(httpRequest, cookieName_userName);
+        String department = getParamByCookie(httpRequest, cookieName_department);
 
         if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(department)) {
             return "login";
         }
 
         String tomorrowStr = tomorrow();
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+
         List<Booking> bookings1 = orderService.getOrdersByDate(sdf.parse(tomorrowStr));
 
-        List<Booking> bookings = orderService.getByUserName(userName, department).stream()
-                .filter(p -> p.getOrderDate().after(new Date()))
-                .collect(Collectors.toList());
+        List<Booking> bookings = orderService.getByUserName(userName, department,sdf.parse(today()));
 
         int lunchCount = 0;
         int dinnerCount = 0;
@@ -71,6 +71,9 @@ public class OrderController {
 
         model.addAttribute("tomorrowUser", bookings1);
 
+        model.addAttribute("userName", userName);
+
+        model.addAttribute("department", department);
 
         return "order";
     }
@@ -139,15 +142,40 @@ public class OrderController {
         String userName = httpRequest.getParameter("userName");
         String department = httpRequest.getParameter("department");
 
+        if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(department)) {
+            model.addAttribute("text", "用户名和部门不能为空");
+            model.addAttribute("button", "返回");
+
+            return "success";
+        }
+
+        String userNameCookie = getParamByCookie(httpRequest, cookieName_userName);
+        String departmentCookie = getParamByCookie(httpRequest, cookieName_department);
+
+        if (!StringUtils.isEmpty(userNameCookie) && !StringUtils.isEmpty(departmentCookie)) {
+            List<Booking> bookings = orderService.getByUserName(userNameCookie, departmentCookie);
+
+            for (Booking booking : bookings) {
+                booking.setDepartment(department);
+                booking.setUserName(userName);
+                orderService.updateOrder(booking);
+            }
+
+            List<Sign> signs = signService.getByUserName(userNameCookie, departmentCookie);
+
+            for (Sign sign : signs) {
+                sign.setDepartment(department);
+                sign.setUserName(userName);
+                signService.update(sign);
+            }
+        }
+
         addCookie(httpServletResponse, cookieName_userName, userName);
         addCookie(httpServletResponse, cookieName_department, department);
 
 
         model.addAttribute("text", "注册成功");
         model.addAttribute("button", "开始点餐");
-
-        model.addAttribute("userName", userName);
-        model.addAttribute("department", department);
 
         return "success";
     }
@@ -244,6 +272,16 @@ public class OrderController {
         return dateString;
     }
 
+    private String today() {
+        Date date = new Date();//取时间
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        date = calendar.getTime(); //这个时间就是日期往后推一天的结果
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = formatter.format(date);
+        return dateString;
+    }
+
     private int getNowOfHour() {
         Date now = new Date();
 
@@ -282,6 +320,10 @@ public class OrderController {
             return userName;
         }
 
+        return getParamByCookie(httpRequest, key);
+    }
+
+    private String getParamByCookie(HttpServletRequest httpRequest, String key) {
         Cookie cookieUserName = getCookieByName(httpRequest, key);
         if (cookieUserName != null) {
             return URLDecoder.decode(cookieUserName.getValue());

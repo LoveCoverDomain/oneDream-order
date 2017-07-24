@@ -9,7 +9,10 @@ import java.util.List;
 public interface OrderRepository extends CrudRepository<Booking, Integer> {
     List<Booking> findByOrderDate(Date orderDate);
 
-    List<Booking> findByUserNameAndDepartment(String userName, String department);
+
+    List<Booking> findByUserNameAndDepartmentOrderByOrderDateAsc(String userName, String department);
+
+    List<Booking> findByUserNameAndDepartmentAndOrderDateGreaterThanOrderByOrderDateDesc(String userName, String department,Date orderDate);
 
     Booking findByUserNameAndDepartmentAndOrderDate(String userName, String department, Date orderDate);
 }

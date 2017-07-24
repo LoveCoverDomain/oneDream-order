@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <title>oneDream订餐</title>
+    <title>OneDream订餐</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
     <link rel="shortcut icon" href="/favicon.ico"/>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -16,17 +16,19 @@
 <body>
 
 <div class="content">
-    <div class="buttons-tab" >
+    <div class="buttons-tab">
         <a href="#tab1" class="tab-link active button">订餐</a>
         <a href="#tab2" class="tab-link button">查看</a>
         <a href="#tab3" class="tab-link button">统计</a>
+        <a href="#tab4" class="tab-link button">我</a>
+
     </div>
     <div class="content-block">
         <div class="tabs">
             <div id="tab1" class="tab active">
                 <form action="/orderDo" method="post">
-                    <input type="hidden" name="userName" id="userName"/>
-                    <input type="hidden" name="department" id="department"/>
+                    <!-- <input type="hidden" name="userName" id="userName"/>
+                     <input type="hidden" name="department" id="department"/>-->
                     <div class="list-block">
                         <ul>
                             <!-- Text inputs -->
@@ -77,11 +79,10 @@
 
                         </ul>
                     </div>
-                    <div class="content-block">
-                        <div class="row">
-                            <button onclick="login_clk()" class="col-100 button button-big button-fill button-success">提交
-                            </button>
-                        </div>
+                    <div class="row">
+                        <button class="col-100 button button-big button-fill button-success">
+                            提交
+                        </button>
                     </div>
                 </form>
 
@@ -141,31 +142,66 @@
 
 
                     <div class="content-block-title"><span th:text="${tomorrow}"></span>具体名单</div>
-                    <div class="content-block">
+                    <div class="list-block">
+                        <ul>
+                            <li class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">姓名</div>
+                                    <div class="item-middle">午餐</div>
+                                    <div class="item-after">晚餐</div>
+                                </div>
+                            </li>
 
-                        <div class="list-block">
-                            <ul>
-                                <li class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">姓名</div>
-                                        <div class="item-middle">午餐</div>
-                                        <div class="item-after">晚餐</div>
+                            <li class="item-content" th:each="booking:${tomorrowUser}">
+                                <div class="item-inner">
+                                    <div class="item-title"><span th:text="${booking.userName}"/>-
+                                        <span th:text="${booking.department}"/>
                                     </div>
-                                </li>
-
-                                <li class="item-content" th:each="booking:${tomorrowUser}">
-                                    <div class="item-inner">
-                                        <div class="item-title"><span th:text="${booking.userName}"></span></div>
-                                        <div class="item-middle"><span th:text="${booking.lunch}"></span></div>
-                                        <div class="item-after"><span th:text="${booking.dinner}"></span></div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                                    <div class="item-middle"><span th:text="${booking.lunch}"></span></div>
+                                    <div class="item-after"><span th:text="${booking.dinner}"></span></div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
 
-
                 </div>
+            </div>
+            <div id="tab4" class="tab">
+                <form action="/loginDo" method="post">
+                    <div class="list-block">
+                        <ul>
+                            <!-- Text inputs -->
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title label">姓名</div>
+                                        <div class="item-input">
+                                            <input id="userName" type="text" name="userName" th:value="${userName}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title label">部门</div>
+                                        <div class="item-input">
+                                            <input id="department" type="text" name="department"
+                                                   th:value="${department}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div class="row">
+                        <button class="col-100 button button-big button-fill button-success">修改</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -183,8 +219,8 @@
             return false;
         } else {
             var storage = window.localStorage;
-            document.getElementById('userName').value= decodeURI(storage.userName) ;
-            document.getElementById('department').value=decodeURI(storage.department);
+            document.getElementById('userName').value = decodeURI(storage.userName);
+            document.getElementById('department').value = decodeURI(storage.department);
         }
     }
 </script>
