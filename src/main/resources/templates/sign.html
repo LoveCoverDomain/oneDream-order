@@ -13,8 +13,19 @@
     <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css"/>
     <script language="javascript">
         function custom_close() {
-            window.location.href="about:blank";
+            if (is_weixn()) {
+                WeixinJSBridge.call('closeWindow');
+            }
+            window.location.href = "about:blank";
             window.close();
+        }
+        function is_weixn() {
+            var ua = navigator.userAgent.toLowerCase();
+            if (ua.match(/MicroMessenger/i) == "micromessenger") {
+                return true;
+            } else {
+                return false;
+            }
         }
     </script>
 
@@ -29,8 +40,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-50"><a onClick="custom_close()" href="#"
-                               class="button button-big button-fill button-danger ">关闭</a></div>
+        <div class="col-50"><a onClick="custom_close()" href="#" class="button button-big button-fill button-danger ">关闭</a></div>
 
         <div class="col-50"><a href="/order" class="button button-big button-fill button-success">进入点餐系统</a></div>
     </div>
