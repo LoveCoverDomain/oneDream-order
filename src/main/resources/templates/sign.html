@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>OneDream订餐</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css"/>
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css"/>
+    <script language="javascript">
+        function custom_close() {
+            window.location.href="about:blank";
+            window.close();
+        }
+    </script>
+
+</head>
+<body>
+<div class="content">
+    <div class="row">
+        <div class="col-100 content-padded">
+            <h2>
+                <span th:text="${userName}"></span> <span th:text="${text}"></span>
+            </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-50"><a onClick="custom_close()" href="#"
+                               class="button button-big button-fill button-danger ">关闭</a></div>
+
+        <div class="col-50"><a href="/order" class="button button-big button-fill button-success">进入点餐系统</a></div>
+    </div>
+
+</div>
+
+</body>
+</html>

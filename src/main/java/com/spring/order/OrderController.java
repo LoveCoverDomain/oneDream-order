@@ -45,7 +45,7 @@ public class OrderController {
 
         List<Booking> bookings1 = orderService.getOrdersByDate(sdf.parse(tomorrowStr));
 
-        List<Booking> bookings = orderService.getByUserName(userName, department,sdf.parse(today()));
+        List<Booking> bookings = orderService.getByUserName(userName, department, sdf.parse(today()));
 
         int lunchCount = 0;
         int dinnerCount = 0;
@@ -182,8 +182,8 @@ public class OrderController {
 
     @RequestMapping(value = "/sign", method = RequestMethod.GET)
     public String sign(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
-        String userName = getParam(httpRequest, cookieName_userName);
-        String department = getParam(httpRequest, cookieName_department);
+        String userName = getParamByCookie(httpRequest, cookieName_userName);
+        String department = getParamByCookie(httpRequest, cookieName_department);
 
         if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(department)) {
             return "login";
@@ -202,15 +202,40 @@ public class OrderController {
             text = "晚餐";
         }
 
-        Sign sign = new Sign(userName, department, new Date(), lunch, dinner);
-        signService.create(sign);
+        if (lunch == 0 && dinner == 0) {
+            text = " 不在签到时间，无法签到";
+        } else {
+            boolean signed = isSign(userName, department, lunch, dinner);
 
-        model.addAttribute("text", text + " 签到成功");
-        model.addAttribute("button", "返回,点击\"查看\"可查阅订餐结果");
+            if (signed) {
+                text = text + " 已签到!";
+            } else {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+                Sign sign = new Sign(userName, department, sdf.parse(today()), lunch, dinner);
+                signService.create(sign);
+                text = text + " 签到成功!";
+            }
+        }
 
-        return "success";
+
+        model.addAttribute("text", text);
+        model.addAttribute("userName", userName);
+        model.addAttribute("department", department);
+
+        return "sign";
     }
 
+    private boolean isSign(String userName, String department, int lunch, int dinner) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+        boolean signed = false;
+        List<Sign> signs = signService.getByUserNameAndSignTime(userName, department, sdf.parse(today()));
+        for (Sign sign : signs) {
+            if (sign.getLunch() == lunch && sign.getDinner() == dinner) {
+                signed = true;
+            }
+        }
+        return signed;
+    }
 
     /**
      * 添加cookie

@@ -8,4 +8,7 @@ import java.util.List;
 
 public interface SignRepository extends CrudRepository<Sign, Integer> {
     List<Sign> findByUserNameAndDepartment(String userName, String department);
+
+    List<Sign> findByUserNameAndDepartmentAndSignTime(String userName, String department, Date signTime);
+
 }

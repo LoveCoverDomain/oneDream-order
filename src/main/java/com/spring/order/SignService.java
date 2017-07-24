@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,6 +26,12 @@ public class SignService {
     public List<Sign> getByUserName(String userName, String department) {
         List<Sign> signs = new ArrayList<>();
         signRepository.findByUserNameAndDepartment(userName, department).forEach(signs::add);
+        return signs;
+    }
+
+    public List<Sign> getByUserNameAndSignTime(String userName, String department, Date signTime) {
+        List<Sign> signs = new ArrayList<>();
+        signRepository.findByUserNameAndDepartmentAndSignTime(userName, department,signTime).forEach(signs::add);
         return signs;
     }
 }

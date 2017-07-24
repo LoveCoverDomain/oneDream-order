@@ -14,6 +14,7 @@ public class Sign {
     private String userName;
     private String department;
     private Date signTime;
+    private Date createTime;
     private int lunch;
     private int dinner;
 
@@ -26,6 +27,7 @@ public class Sign {
         this.signTime = signTime;
         this.lunch = lunch;
         this.dinner = dinner;
+        this.createTime = new Date();
     }
 
     public int getId() {
@@ -74,5 +76,13 @@ public class Sign {
 
     public void setDinner(int dinner) {
         this.dinner = dinner;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
