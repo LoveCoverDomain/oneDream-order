@@ -88,77 +88,77 @@
 
             </div>
             <div id="tab2" class="tab">
-                    <div class="list-block">
-                        <ul>
-                            <li class="item-content">
-                                <div class="item-inner">
-                                    <div class="item-title">日期</div>
-                                    <div class="item-middle">午餐</div>
-                                    <div class="item-after">晚餐</div>
-                                </div>
-                            </li>
-                            <li class="item-content" th:each="booking:${bookings}">
-                                <div class="item-inner">
-                                    <div class="item-title"><span
-                                            th:text="${#dates.format(booking.orderDate, 'yyyy-MM-dd')}"></span></div>
-                                    <div class="item-middle"><span th:text="${booking.lunch}"></span></div>
-                                    <div class="item-after"><span th:text="${booking.dinner}"></span></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="list-block">
+                    <ul>
+                        <li class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">日期</div>
+                                <div class="item-middle">午餐</div>
+                                <div class="item-after">晚餐</div>
+                            </div>
+                        </li>
+                        <li class="item-content" th:each="booking:${bookings}">
+                            <div class="item-inner">
+                                <div class="item-title"><span
+                                        th:text="${#dates.format(booking.orderDate, 'yyyy-MM-dd')}"></span></div>
+                                <div class="item-middle"><span th:text="${booking.lunch}"></span></div>
+                                <div class="item-after"><span th:text="${booking.dinner}"></span></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div id="tab3" class="tab">
-                    <div class="content-block-title"><span th:text="${tomorrow}"></span>统计情况</div>
-                    <div class="list-block">
-                        <ul>
-                            <li class="item-content">
-                                <div class="item-media"><i class="icon icon-f7"></i></div>
-                                <div class="item-inner">
-                                    <div class="item-title">点餐人数</div>
-                                    <div class="item-after"><span th:text="${userCount}"/></div>
-                                </div>
-                            </li>
-                            <li class="item-content">
-                                <div class="item-media"><i class="icon icon-f7"></i></div>
-                                <div class="item-inner">
-                                    <div class="item-title">午餐预定数量</div>
-                                    <div class="item-after"><span th:text="${lunchCount}"/></div>
-                                </div>
-                            </li>
-                            <li class="item-content">
-                                <div class="item-media"><i class="icon icon-f7"></i></div>
-                                <div class="item-inner">
-                                    <div class="item-title">晚餐预定数量</div>
-                                    <div class="item-after"><span th:text="${dinnerCount}"/></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="content-block-title"><span th:text="${tomorrow}"></span>统计情况</div>
+                <div class="list-block">
+                    <ul>
+                        <li class="item-content">
+                            <div class="item-media"><i class="icon icon-f7"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">点餐人数</div>
+                                <div class="item-after"><span th:text="${userCount}"/></div>
+                            </div>
+                        </li>
+                        <li class="item-content">
+                            <div class="item-media"><i class="icon icon-f7"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">午餐预定数量</div>
+                                <div class="item-after"><span th:text="${lunchCount}"/></div>
+                            </div>
+                        </li>
+                        <li class="item-content">
+                            <div class="item-media"><i class="icon icon-f7"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">晚餐预定数量</div>
+                                <div class="item-after"><span th:text="${dinnerCount}"/></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
 
 
-                    <div class="content-block-title"><span th:text="${tomorrow}"></span>具体名单</div>
-                    <div class="list-block">
-                        <ul>
-                            <li class="item-content">
-                                <div class="item-inner">
-                                    <div class="item-title">姓名</div>
-                                    <div class="item-middle">午餐</div>
-                                    <div class="item-after">晚餐</div>
-                                </div>
-                            </li>
+                <div class="content-block-title"><span th:text="${tomorrow}"></span>具体名单</div>
+                <div class="list-block">
+                    <ul>
+                        <li class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">姓名</div>
+                                <div class="item-middle">午餐</div>
+                                <div class="item-after">晚餐</div>
+                            </div>
+                        </li>
 
-                            <li class="item-content" th:each="booking:${tomorrowUser}">
-                                <div class="item-inner">
-                                    <div class="item-title"><span th:text="${booking.userName}"/>-
-                                        <span th:text="${booking.department}"/>
-                                    </div>
-                                    <div class="item-middle"><span th:text="${booking.lunch}"></span></div>
-                                    <div class="item-after"><span th:text="${booking.dinner}"></span></div>
+                        <li class="item-content" th:each="booking:${tomorrowUser}">
+                            <div class="item-inner">
+                                <div class="item-title"><span th:text="${booking.userName}"/>-
+                                    <span th:text="${booking.department}"/>
                                 </div>
-                            </li>
-                        </ul>
-                    </div>
+                                <div class="item-middle"><span th:text="${booking.lunch}"></span></div>
+                                <div class="item-after"><span th:text="${booking.dinner}"></span></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div id="tab4" class="tab">
                 <form action="/loginDo" method="post">
