@@ -194,17 +194,17 @@ public class OrderController {
         int lunch = 0;
         int dinner = 0;
         String text = "";
-        if (hour >= 11 && hour <= 14) {
+        if (hour >= 10 && hour <= 13) {
             lunch = 1;
             text = "午餐";
         }
-        if (hour > 16 && hour <= 20) {
+        if (hour >= 16 && hour <= 20) {
             dinner = 1;
             text = "晚餐";
         }
 
         if (lunch == 0 && dinner == 0) {
-            text = " 不在签到时间，无法签到";
+            text = " 不在用餐时间，无法签到。午餐：10点-13点 晚餐：16点-20点";
         } else {
             boolean signed = isSign(userName, department, lunch, dinner);
 
