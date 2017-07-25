@@ -204,7 +204,7 @@ public class OrderController {
         }
 
         if (lunch == 0 && dinner == 0) {
-            text = " 不在用餐时间，无法签到。午餐：10点-13点 晚餐：16点-20点";
+            text = " 不在用餐时间，无法签到。午餐：10点-14点 晚餐：16点-20点";
         } else {
             boolean signed = isSign(userName, department, lunch, dinner);
 
