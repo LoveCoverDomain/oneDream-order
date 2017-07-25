@@ -12,6 +12,10 @@ public interface SignRepository extends CrudRepository<Sign, Integer> {
 
     List<Sign> findByUserNameAndDepartmentAndSignTime(String userName, String department, Date signTime);
 
+    List<Sign> findBySignTimeAndLunch(Date signTime, int lunch);
+
+    List<Sign> findBySignTimeAndDinner(Date signTime, int dinner);
+
     @Query("select new com.spring.order.DateCount(a.signTime ,sum(a.dinner)) from Sign a where a.signTime >= '2017-07-24 00:00:00' and a.signTime <= ?1 and dinner=1 group by a.signTime order by a.signTime desc")
     List<DateCount> getDinnerCount(Date signTime);
 

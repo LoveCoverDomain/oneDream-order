@@ -35,6 +35,18 @@ public class SignService {
         return signs;
     }
 
+    public List<Sign> getLunchBySignTime(Date signTime) {
+        List<Sign> signs = new ArrayList<>();
+        signRepository.findBySignTimeAndLunch(signTime, 1).forEach(signs::add);
+        return signs;
+    }
+
+    public List<Sign> getDinnerBySignTime(Date signTime) {
+        List<Sign> signs = new ArrayList<>();
+        signRepository.findBySignTimeAndDinner(signTime, 1).forEach(signs::add);
+        return signs;
+    }
+
     public List<DateCount> getLunchCount(Date signTime) {
         return signRepository.getLunchCount(signTime);
     }

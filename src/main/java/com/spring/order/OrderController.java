@@ -15,6 +15,7 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -254,6 +255,77 @@ public class OrderController {
         return "statistics";
     }
 
+
+    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+    private String detail(String date, Model model) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+        Date d = sdf.parse(date);
+
+        Set<String> set = new HashSet();
+        List<Booking> bookings = orderService.getOrdersByDate(d);
+        List<Sign> lunchSign = signService.getLunchBySignTime(d);
+        List<Sign> dinnerSign = signService.getDinnerBySignTime(d);
+
+        List<String> lunchSignKey = lunchSign.stream().map(p -> p.getUserName() + "-" + p.getDepartment()).collect(Collectors.toList());
+        List<String> dinnerSignKey = dinnerSign.stream().map(p -> p.getUserName() + "-" + p.getDepartment()).collect(Collectors.toList());
+
+
+        List<DateDetailCount> result = new ArrayList<>();
+        bookings.stream().forEach(p -> {
+            String key = p.getUserName() + "-" + p.getDepartment();
+            if (!set.contains(key)) {
+                DateDetailCount detail = new DateDetailCount();
+                detail.setDate(d);
+                detail.setUserName(p.getUserName());
+                detail.setDepartment(p.getDepartment());
+                detail.setLunchCount(Long.valueOf(p.getLunch()));
+                detail.setDinnerCount(Long.valueOf(p.getDinner()));
+                detail.setSignLunchCount(lunchSignKey.contains(key) ? 1L : 0L);
+                detail.setSignDinnerCount(dinnerSignKey.contains(key) ? 1L : 0);
+
+                set.add(key);
+                result.add(detail);
+            }
+        });
+
+        lunchSign.stream().forEach(p -> {
+            String key = p.getUserName() + "-" + p.getDepartment();
+            if (!set.contains(key)) {
+                DateDetailCount detail = new DateDetailCount();
+                detail.setDate(d);
+                detail.setUserName(p.getUserName());
+                detail.setDepartment(p.getDepartment());
+                detail.setLunchCount(0L);
+                detail.setDinnerCount(0L);
+                detail.setSignLunchCount(1L);
+                detail.setSignDinnerCount(dinnerSignKey.contains(key) ? 1L : 0);
+
+                set.add(key);
+                result.add(detail);
+            }
+        });
+
+        dinnerSign.stream().forEach(p -> {
+            String key = p.getUserName() + "-" + p.getDepartment();
+            if (!set.contains(key)) {
+                DateDetailCount detail = new DateDetailCount();
+                detail.setDate(d);
+                detail.setUserName(p.getUserName());
+                detail.setDepartment(p.getDepartment());
+                detail.setLunchCount(0L);
+                detail.setDinnerCount(0L);
+                detail.setSignLunchCount(lunchSignKey.contains(key) ? 1L : 0L);
+                detail.setSignDinnerCount(1L);
+
+                set.add(key);
+                result.add(detail);
+            }
+        });
+
+        model.addAttribute("result", result);
+
+        return "detail";
+    }
 
     private boolean isSign(String userName, String department, int lunch, int dinner) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟

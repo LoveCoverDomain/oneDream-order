@@ -18,6 +18,9 @@ public class DateCount implements Serializable {
     private Long signDinnerCount;
     private Long count;
 
+    public DateCount() {
+    }
+
     public DateCount(Date date, Long lunchCount, Long dinnerCount) {
         this.date = date;
         this.lunchCount = lunchCount;

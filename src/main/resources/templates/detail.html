@@ -17,36 +17,37 @@
     <style type="text/css">
         <!--
         body {
-            width: 1000px;
-            overflow-x: auto;
-            overflow-y: auto;
+            width:1000px;
+            overflow-x:auto;
+            overflow-y:auto;
         }
-
         -->
     </style>
 </head>
 <body>
-<div class="grid-demo">
+<div class="control-group">
+
     <table class="sui-table table-zebra table-primary">
         <thead>
         <tr>
             <th>日期</th>
-            <th>午餐预定数量</th>
-            <th>午餐签到数量</th>
-            <th>晚餐预定数量</th>
-            <th>晚餐签到数量</th>
-            <th>详情</th>
+            <th>姓名</th>
+            <th>部门</th>
+            <th>午餐预定</th>
+            <th>午餐签到</th>
+            <th>晚餐预定</th>
+            <th>晚餐签到</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="booking:${result}">
             <td><span th:text="${#dates.format(booking.date, 'yyyy-MM-dd')}"></span></td>
+            <td><span th:text="${booking.userName}"></span></td>
+            <td><span th:text="${booking.department}"></span></td>
             <td><span th:text="${booking.lunchCount}"></span></td>
             <td><span th:text="${booking.signLunchCount}"></span></td>
             <td><span th:text="${booking.dinnerCount}"></span></td>
             <td><span th:text="${booking.signDinnerCount}"></span></td>
-            <td><a th:href="@{/detail(date=${#dates.format(booking.date, 'yyyy-MM-dd')})}" target="_Blank">详情</a>
-            </td>
         </tr>
         </tbody>
     </table>
