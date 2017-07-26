@@ -14,17 +14,21 @@ public class DateCount implements Serializable {
     private Date date;
     private Long lunchCount;
     private Long dinnerCount;
+    private Long supperCount;
     private Long signLunchCount;
     private Long signDinnerCount;
+    private Long signSupperCount;
+
     private Long count;
 
     public DateCount() {
     }
 
-    public DateCount(Date date, Long lunchCount, Long dinnerCount) {
+    public DateCount(Date date, Long lunchCount, Long dinnerCount, Long supperCount) {
         this.date = date;
         this.lunchCount = lunchCount;
         this.dinnerCount = dinnerCount;
+        this.supperCount = supperCount;
     }
 
     public DateCount(Date date, Long count) {
@@ -78,5 +82,21 @@ public class DateCount implements Serializable {
 
     public void setSignDinnerCount(Long signDinnerCount) {
         this.signDinnerCount = signDinnerCount;
+    }
+
+    public Long getSupperCount() {
+        return supperCount;
+    }
+
+    public void setSupperCount(Long supperCount) {
+        this.supperCount = supperCount;
+    }
+
+    public Long getSignSupperCount() {
+        return signSupperCount;
+    }
+
+    public void setSignSupperCount(Long signSupperCount) {
+        this.signSupperCount = signSupperCount;
     }
 }

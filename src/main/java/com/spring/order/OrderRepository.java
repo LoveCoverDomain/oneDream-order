@@ -18,6 +18,6 @@ public interface OrderRepository extends CrudRepository<Booking, Integer> {
 
     Booking findByUserNameAndDepartmentAndOrderDate(String userName, String department, Date orderDate);
 
-    @Query("select new com.spring.order.DateCount(a.orderDate ,sum(a.lunch),sum(a.dinner)) from Booking a where a.orderDate >= '2017-07-24 00:00:00'  and  a.orderDate <=?1 group by a.orderDate order by  a.orderDate desc ")
+    @Query("select new com.spring.order.DateCount(a.orderDate ,sum(a.lunch),sum(a.dinner),sum(a.supper)) from Booking a where a.orderDate >= '2017-07-24 00:00:00'  and  a.orderDate <=?1 group by a.orderDate order by  a.orderDate desc ")
     List<DateCount> getOrderCount(Date orderDate);
 }

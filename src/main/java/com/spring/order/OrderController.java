@@ -50,10 +50,13 @@ public class OrderController {
 
         int lunchCount = 0;
         int dinnerCount = 0;
+        int supperCount = 0;
+
 
         for (Booking booking : bookings1) {
             lunchCount += booking.getLunch();
             dinnerCount += booking.getDinner();
+            supperCount += booking.getSupper();
         }
 
         if (dinnerCount > 0) {
@@ -69,6 +72,8 @@ public class OrderController {
         model.addAttribute("lunchCount", lunchCount);
 
         model.addAttribute("dinnerCount", dinnerCount);
+
+        model.addAttribute("supperCount", supperCount);
 
         model.addAttribute("tomorrowUser", bookings1);
 
@@ -97,6 +102,10 @@ public class OrderController {
         String dinnerStr = httpRequest.getParameter("dinner");
         int dinner = Integer.valueOf(dinnerStr == null ? "0" : dinnerStr);
 
+
+        String supperStr = httpRequest.getParameter("supper");
+        int supper = Integer.valueOf(supperStr == null ? "0" : supperStr);
+
         String userName = getParam(httpRequest, cookieName_userName);
         String department = getParam(httpRequest, cookieName_department);
 
@@ -118,9 +127,10 @@ public class OrderController {
             if (bookingDb != null) {
                 bookingDb.setLunch(lunch);
                 bookingDb.setDinner(dinner);
+                bookingDb.setSupper(supper);
                 orderService.updateOrder(bookingDb);
             } else {
-                Booking booking = new Booking(userName, department, sdf.parse(orderDate), lunch, dinner);
+                Booking booking = new Booking(userName, department, sdf.parse(orderDate), lunch, dinner, supper);
                 orderService.createOrder(booking);
             }
         } catch (Exception e) {
@@ -193,26 +203,33 @@ public class OrderController {
         int hour = getNowOfHour();
         int lunch = 0;
         int dinner = 0;
+        int supper = 0;
         String text = "";
         if (hour >= 10 && hour <= 13) {
             lunch = 1;
             text = "午餐";
         }
-        if (hour >= 16 && hour <= 20) {
+        if (hour >= 16 && hour <= 19) {
             dinner = 1;
             text = "晚餐";
         }
 
-        if (lunch == 0 && dinner == 0) {
-            text = " 不在用餐时间，无法签到。午餐：10点-14点 晚餐：16点-20点";
+        if (hour >= 21) {
+            supper = 1;
+            text = "夜宵";
+        }
+
+
+        if (lunch == 0 && dinner == 0 && supper == 0) {
+            text = " 不在用餐时间，无法签到。午餐：10点-14点 晚餐：16点-20点 夜宵：21点-24点";
         } else {
-            boolean signed = isSign(userName, department, lunch, dinner);
+            boolean signed = isSign(userName, department, lunch, dinner, supper);
 
             if (signed) {
                 text = text + " 已签到!";
             } else {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
-                Sign sign = new Sign(userName, department, sdf.parse(today()), lunch, dinner);
+                Sign sign = new Sign(userName, department, sdf.parse(today()), lunch, dinner, supper);
                 signService.create(sign);
                 text = text + " 签到成功!";
             }
@@ -238,9 +255,13 @@ public class OrderController {
         Map<Date, Long> signDinnerMap = signService.getDinnerCount(sdf.parse(today())).stream()
                 .collect(Collectors.toMap(DateCount::getDate, DateCount::getCount));
 
+        Map<Date, Long> signSupperMap = signService.getSupperCount(sdf.parse(today())).stream()
+                .collect(Collectors.toMap(DateCount::getDate, DateCount::getCount));
+
         for (DateCount dateCount : result) {
             Long signLunch = signLunchMap.get(dateCount.getDate());
             Long signDinner = signDinnerMap.get(dateCount.getDate());
+            Long signSupper = signSupperMap.get(dateCount.getDate());
 
             if (dateCount.getDinnerCount() > 0) {
                 dateCount.setDinnerCount(dateCount.getDinnerCount() + 3);
@@ -248,6 +269,7 @@ public class OrderController {
 
             dateCount.setSignLunchCount(signLunch == null ? 0 : signLunch);
             dateCount.setSignDinnerCount(signDinner == null ? 0 : signDinner + 3);
+            dateCount.setSignSupperCount(signSupper == null ? 0 : signSupper);
         }
 
         model.addAttribute("result", result);
@@ -265,9 +287,11 @@ public class OrderController {
         List<Booking> bookings = orderService.getOrdersByDate(d);
         List<Sign> lunchSign = signService.getLunchBySignTime(d);
         List<Sign> dinnerSign = signService.getDinnerBySignTime(d);
+        List<Sign> supperSign = signService.getSupperBySignTime(d);
 
         List<String> lunchSignKey = lunchSign.stream().map(p -> p.getUserName() + "-" + p.getDepartment()).collect(Collectors.toList());
         List<String> dinnerSignKey = dinnerSign.stream().map(p -> p.getUserName() + "-" + p.getDepartment()).collect(Collectors.toList());
+        List<String> supperSignKey = supperSign.stream().map(p -> p.getUserName() + "-" + p.getDepartment()).collect(Collectors.toList());
 
 
         List<DateDetailCount> result = new ArrayList<>();
@@ -280,8 +304,11 @@ public class OrderController {
                 detail.setDepartment(p.getDepartment());
                 detail.setLunchCount(Long.valueOf(p.getLunch()));
                 detail.setDinnerCount(Long.valueOf(p.getDinner()));
+                detail.setSupperCount(Long.valueOf(p.getSupper()));
+
                 detail.setSignLunchCount(lunchSignKey.contains(key) ? 1L : 0L);
                 detail.setSignDinnerCount(dinnerSignKey.contains(key) ? 1L : 0);
+                detail.setSignSupperCount(supperSignKey.contains(key) ? 1L : 0);
 
                 set.add(key);
                 result.add(detail);
@@ -297,8 +324,11 @@ public class OrderController {
                 detail.setDepartment(p.getDepartment());
                 detail.setLunchCount(0L);
                 detail.setDinnerCount(0L);
+                detail.setSupperCount(0L);
+
                 detail.setSignLunchCount(1L);
                 detail.setSignDinnerCount(dinnerSignKey.contains(key) ? 1L : 0);
+                detail.setSignSupperCount(supperSignKey.contains(key) ? 1L : 0);
 
                 set.add(key);
                 result.add(detail);
@@ -314,25 +344,49 @@ public class OrderController {
                 detail.setDepartment(p.getDepartment());
                 detail.setLunchCount(0L);
                 detail.setDinnerCount(0L);
+                detail.setSupperCount(0L);
+
                 detail.setSignLunchCount(lunchSignKey.contains(key) ? 1L : 0L);
                 detail.setSignDinnerCount(1L);
+                detail.setSignSupperCount(supperSignKey.contains(key) ? 1L : 0);
 
                 set.add(key);
                 result.add(detail);
             }
         });
 
+        supperSign.stream().forEach(p -> {
+            String key = p.getUserName() + "-" + p.getDepartment();
+            if (!set.contains(key)) {
+                DateDetailCount detail = new DateDetailCount();
+                detail.setDate(d);
+                detail.setUserName(p.getUserName());
+                detail.setDepartment(p.getDepartment());
+                detail.setLunchCount(0L);
+                detail.setDinnerCount(0L);
+                detail.setSupperCount(0L);
+
+                detail.setSignLunchCount(lunchSignKey.contains(key) ? 1L : 0L);
+                detail.setSignDinnerCount(dinnerSignKey.contains(key) ? 1L : 0);
+                detail.setSignSupperCount(1L);
+
+                set.add(key);
+                result.add(detail);
+            }
+        });
+
+
         model.addAttribute("result", result);
 
         return "detail";
     }
 
-    private boolean isSign(String userName, String department, int lunch, int dinner) throws Exception {
+    private boolean isSign(String userName, String department, int lunch, int dinner, int supper) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
         boolean signed = false;
         List<Sign> signs = signService.getByUserNameAndSignTime(userName, department, sdf.parse(today()));
         for (Sign sign : signs) {
-            if (sign.getLunch() == lunch && sign.getDinner() == dinner) {
+            if (sign.getLunch() == lunch && sign.getDinner() == dinner && sign.getSupper() == supper) {
                 signed = true;
             }
         }

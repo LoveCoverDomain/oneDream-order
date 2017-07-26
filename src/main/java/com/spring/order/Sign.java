@@ -18,16 +18,18 @@ public class Sign implements Serializable {
     private Date createTime;
     private int lunch;
     private int dinner;
+    private int supper;
 
     public Sign() {
     }
 
-    public Sign(String userName, String department, Date signTime, int lunch, int dinner) {
+    public Sign(String userName, String department, Date signTime, int lunch, int dinner, int supper) {
         this.userName = userName;
         this.department = department;
         this.signTime = signTime;
         this.lunch = lunch;
         this.dinner = dinner;
+        this.supper = supper;
         this.createTime = new Date();
     }
 
@@ -85,5 +87,13 @@ public class Sign implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public int getSupper() {
+        return supper;
+    }
+
+    public void setSupper(int supper) {
+        this.supper = supper;
     }
 }

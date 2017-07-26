@@ -16,10 +16,16 @@ public interface SignRepository extends CrudRepository<Sign, Integer> {
 
     List<Sign> findBySignTimeAndDinner(Date signTime, int dinner);
 
+    List<Sign> findBySignTimeAndSupper(Date signTime, int supper);
+
+
     @Query("select new com.spring.order.DateCount(a.signTime ,sum(a.dinner)) from Sign a where a.signTime >= '2017-07-24 00:00:00' and a.signTime <= ?1 and dinner=1 group by a.signTime order by a.signTime desc")
     List<DateCount> getDinnerCount(Date signTime);
 
 
     @Query("select new com.spring.order.DateCount(a.signTime ,sum(a.lunch)) from Sign a where a.signTime >= '2017-07-24 00:00:00' and a.signTime <= ?1 and lunch=1 group by a.signTime order by a.signTime desc ")
     List<DateCount> getLunchCount(Date signTime);
+
+    @Query("select new com.spring.order.DateCount(a.signTime ,sum(a.supper)) from Sign a where a.signTime >= '2017-07-24 00:00:00' and a.signTime <= ?1 and supper=1 group by a.signTime order by a.signTime desc ")
+    List<DateCount> getSupperCount(Date signTime);
 }

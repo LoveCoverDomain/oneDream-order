@@ -21,14 +21,11 @@
         <a href="#tab2" class="tab-link button">查看</a>
         <a href="#tab3" class="tab-link button">统计</a>
         <a href="#tab4" class="tab-link button">我</a>
-
     </div>
     <div class="content-block">
         <div class="tabs">
             <div id="tab1" class="tab active">
                 <form action="/orderDo" method="post">
-                    <!-- <input type="hidden" name="userName" id="userName"/>
-                     <input type="hidden" name="department" id="department"/>-->
                     <div class="list-block">
                         <ul>
                             <!-- Text inputs -->
@@ -38,9 +35,12 @@
                                     <div class="item-inner">
                                         <div class="item-title label">日期</div>
                                         <div class="item-input">
-                                            <input name="orderDate" type="date" placeholder="Birth day"
-                                                   th:value="${tomorrow}"/>
+                                            <input id="orderDate" name="orderDate" type="date" th:value="${tomorrow}"
+                                                   onchange="getDay()"/>
                                         </div>
+
+                                        <div id="show" class="item-title label"></div>
+
                                     </div>
                                 </div>
                             </li>
@@ -76,6 +76,21 @@
                                 </div>
                             </li>
 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media"><i class="icon icon-form-toggle"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title label">夜宵</div>
+                                        <div class="item-input">
+                                            <label class="label-switch">
+                                                <input name="supper" type="checkbox" value="1"/>
+                                                <div class="checkbox"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
 
                         </ul>
                     </div>
@@ -93,16 +108,19 @@
                         <li class="item-content">
                             <div class="item-inner">
                                 <div class="item-title">日期</div>
-                                <div class="item-middle">午餐</div>
+                                <div class="item-after">午餐</div>
                                 <div class="item-after">晚餐</div>
+                                <div class="item-after">夜宵</div>
+
                             </div>
                         </li>
                         <li class="item-content" th:each="booking:${bookings}">
                             <div class="item-inner">
                                 <div class="item-title"><span
                                         th:text="${#dates.format(booking.orderDate, 'yyyy-MM-dd')}"></span></div>
-                                <div class="item-middle"><span th:text="${booking.lunch}"></span></div>
+                                <div class="item-after"><span th:text="${booking.lunch}"></span></div>
                                 <div class="item-after"><span th:text="${booking.dinner}"></span></div>
+                                <div class="item-after"><span th:text="${booking.supper}"></span></div>
                             </div>
                         </li>
                     </ul>
@@ -133,6 +151,14 @@
                                 <div class="item-after"><span th:text="${dinnerCount}"/></div>
                             </div>
                         </li>
+
+                        <li class="item-content">
+                            <div class="item-media"><i class="icon icon-f7"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">夜宵预定数量</div>
+                                <div class="item-after"><span th:text="${supperCount}"/></div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
 
@@ -143,8 +169,10 @@
                         <li class="item-content">
                             <div class="item-inner">
                                 <div class="item-title">姓名</div>
-                                <div class="item-middle">午餐</div>
+                                <div class="item-after">午餐</div>
                                 <div class="item-after">晚餐</div>
+                                <div class="item-after">夜宵</div>
+
                             </div>
                         </li>
 
@@ -153,8 +181,9 @@
                                 <div class="item-title"><span th:text="${booking.userName}"/>-
                                     <span th:text="${booking.department}"/>
                                 </div>
-                                <div class="item-middle"><span th:text="${booking.lunch}"></span></div>
+                                <div class="item-after"><span th:text="${booking.lunch}"></span></div>
                                 <div class="item-after"><span th:text="${booking.dinner}"></span></div>
+                                <div class="item-after"><span th:text="${booking.supper}"></span></div>
                             </div>
                         </li>
                     </ul>
@@ -207,6 +236,13 @@
 <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
 
 <script>
+    var days = ['日', '一', '二', '三', '四', '五', '六'];
+    getDay();
+    function getDay() {
+        var date = document.getElementById('orderDate').value;
+        var day = new Date(date).getDay();
+        document.getElementById('show').innerText = "(星期" + days[day]+")";
+    }
     function login_clk() {
         if (!window.localStorage) {
             alert("浏览器支持localstorage");
@@ -214,7 +250,7 @@
         } else {
             var storage = window.localStorage;
             document.getElementById('userName').value = decodeURI(storage.userName);
-            document.getElementById('department').value = decodeURI(storage.department);
+            document.getElementById('department').textContent = decodeURI(storage.department);
         }
     }
 </script>

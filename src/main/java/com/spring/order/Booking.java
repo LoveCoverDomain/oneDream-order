@@ -14,16 +14,18 @@ public class Booking implements Serializable {
     private Date orderDate;
     private int lunch;
     private int dinner;
+    private int supper;
 
     public Booking() {
     }
 
-    public Booking(String userName, String department, Date orderDate, int lunch, int dinner) {
+    public Booking(String userName, String department, Date orderDate, int lunch, int dinner, int supper) {
         this.userName = userName;
         this.department = department;
         this.orderDate = orderDate;
         this.lunch = lunch;
         this.dinner = dinner;
+        this.supper = supper;
     }
 
     public int getId() {
@@ -72,5 +74,13 @@ public class Booking implements Serializable {
 
     public void setDinner(int dinner) {
         this.dinner = dinner;
+    }
+
+    public int getSupper() {
+        return supper;
+    }
+
+    public void setSupper(int supper) {
+        this.supper = supper;
     }
 }
