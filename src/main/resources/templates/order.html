@@ -107,7 +107,7 @@
                     <ul>
                         <li class="item-content">
                             <div class="item-inner">
-                                <div class="item-title">日期</div>
+                                <div class="item-title" style="width:30%">日期</div>
                                 <div class="item-after">午餐</div>
                                 <div class="item-after">晚餐</div>
                                 <div class="item-after">夜宵</div>
@@ -116,8 +116,9 @@
                         </li>
                         <li class="item-content" th:each="booking:${bookings}">
                             <div class="item-inner">
-                                <div class="item-title"><span
-                                        th:text="${#dates.format(booking.orderDate, 'yyyy-MM-dd')}"></span></div>
+                                <div class="item-title" style="width:30%">
+                                    <span th:text="${#dates.format(booking.orderDate, 'yyyy-MM-dd')}"></span>
+                                </div>
                                 <div class="item-after"><span th:text="${booking.lunch}"></span></div>
                                 <div class="item-after"><span th:text="${booking.dinner}"></span></div>
                                 <div class="item-after"><span th:text="${booking.supper}"></span></div>
@@ -168,7 +169,7 @@
                     <ul>
                         <li class="item-content">
                             <div class="item-inner">
-                                <div class="item-title">姓名</div>
+                                <div class="item-title" style="width:55%">姓名</div>
                                 <div class="item-after">午餐</div>
                                 <div class="item-after">晚餐</div>
                                 <div class="item-after">夜宵</div>
@@ -178,8 +179,8 @@
 
                         <li class="item-content" th:each="booking:${tomorrowUser}">
                             <div class="item-inner">
-                                <div class="item-title"><span th:text="${booking.userName}"/>-
-                                    <span th:text="${booking.department}"/>
+                                <div class="item-title" style="width:55%">
+                                    <span th:text="${booking.userName}"/>-<span th:text="${booking.department}"/>
                                 </div>
                                 <div class="item-after"><span th:text="${booking.lunch}"></span></div>
                                 <div class="item-after"><span th:text="${booking.dinner}"></span></div>
