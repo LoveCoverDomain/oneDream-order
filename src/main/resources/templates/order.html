@@ -99,7 +99,7 @@
                     <ul>
                         <li class="item-content">
                             <div class="item-inner">
-                                <div class="item-title" style="width:35%">日期</div>
+                                <div class="item-title" style="width:40%">日期</div>
                                 <div class="item-after">午餐</div>
                                 <div class="item-after">晚餐</div>
                                 <div class="item-after">夜宵</div>
@@ -108,7 +108,7 @@
                         </li>
                         <li class="item-content" th:each="booking:${bookings}">
                             <div class="item-inner">
-                                <div class="item-title" style="width:35%">
+                                <div class="item-title" style="width:40%">
                                     <span th:text="${#dates.format(booking.orderDate, 'yyyy-MM-dd')}"></span>
                                 </div>
                                 <div class="item-after"><span th:text="${booking.lunch}"></span></div>
