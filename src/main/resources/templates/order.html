@@ -20,7 +20,7 @@
         <a href="#tab1" class="tab-link active button">订餐</a>
         <a href="#tab2" class="tab-link button">查看</a>
         <a href="#tab3" class="tab-link button">统计</a>
-        <a href="#tab4" class="tab-link button">我</a>
+        <a href="#tab4" class="tab-link button">我的</a>
     </div>
     <div class="content-block">
         <div class="tabs">
@@ -183,42 +183,103 @@
                 </div>
             </div>
             <div id="tab4" class="tab">
-                <form action="/loginDo" method="post">
-                    <div class="list-block">
-                        <ul>
-                            <!-- Text inputs -->
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-media"><i class="icon icon-form-name"></i></div>
-                                    <div class="item-inner">
-                                        <div class="item-title label">姓名</div>
-                                        <div class="item-input">
-                                            <input id="userName" type="text" name="userName" th:value="${userName}"/>
+                <div class="card">
+                    <form id="updateForm" action="/updateDo" method="post">
+                        <div class="card-header">个人信息</div>
+                        <div class="card-content">
+                            <div class="list-block">
+                                <ul>
+                                    <!-- Text inputs -->
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                            <div class="item-inner">
+                                                <div class="item-title label">姓名</div>
+                                                <div class="item-input">
+                                                    <input id="userName" type="text" name="userName"
+                                                           th:value="${userName}"/>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </li>
+                                    </li>
 
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-media"><i class="icon icon-form-name"></i></div>
-                                    <div class="item-inner">
-                                        <div class="item-title label">部门</div>
-                                        <div class="item-input">
-                                            <input id="department" type="text" name="department"
-                                                   th:value="${department}"/>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                            <div class="item-inner">
+                                                <div class="item-title label">部门</div>
+                                                <div class="item-input">
+                                                    <input id="department" type="text" name="department"
+                                                           th:value="${department}"/>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </li>
+                                    </li>
 
-                        </ul>
-                    </div>
-                    <div class="row">
-                        <button class="col-100 button button-big button-fill button-success">修改</button>
-                    </div>
-                </form>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                        <div class="card-footer">
+                            <a href="#" class="link"></a>
+                            <a href="#" class="link"
+                               onclick="document.getElementById('updateForm').submit();return false">修改</a>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="card">
+                    <form id="suggestFrom" action="/suggestDo" method="post">
+                        <div class="card-header">意见反馈</div>
+                        <div class="card-content">
+                            <div class="list-block">
+                                <ul>
+                                    <!-- Text inputs -->
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-media"><i class="icon icon-form-gender"></i></div>
+                                            <div class="item-inner">
+                                                <div class="item-title label">TA</div>
+                                                <div class="item-input">
+                                                    <select name="object">
+                                                        <option value="orderHelper">订餐助手</option>
+                                                        <option value="kitchener">厨师</option>
+                                                        <option value="administration">行政</option>
+                                                        <option value="manager">总经理</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li class="align-top">
+                                        <div class="item-content">
+                                            <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                                            <div class="item-inner">
+                                                <div class="item-title label">说点什么</div>
+                                                <div class="item-input">
+                                                    <textarea name="content"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+
+                        </div>
+
+                        <div class="card-footer">
+                            <a href="#" class="link"></a>
+                            <a href="#" class="link"
+                               onclick="document.getElementById('suggestFrom').submit();return false">提交</a>
+                        </div>
+                    </form>
+                </div>
+
             </div>
+
         </div>
     </div>
 </div>
