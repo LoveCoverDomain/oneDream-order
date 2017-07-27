@@ -11,7 +11,6 @@
 
     <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css"/>
     <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css"/>
-
 </head>
 <body>
 
@@ -31,14 +30,24 @@
                             <!-- Text inputs -->
                             <li>
                                 <div class="item-content">
-                                    <div class="item-inner" style="overflow:scroll">
-                                        <div class="item-title label" style="width:50px">日期</div>
+                                    <div class="item-inner">
+                                        <div class="item-title label">日期</div>
+
                                         <div class="item-input">
                                             <input id="orderDate" name="orderDate" type="date" th:value="${tomorrow}"
-                                                   onchange="getDay()"/>
+                                                   onchange="getDay()" dateFormat='yyyy-MM-dd'/>
                                         </div>
+                                    </div>
+                                </div>
+                            </li>
 
-                                        <div id="show" class="item-title label"></div>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-inner" style="overflow:scroll">
+                                        <div class="item-title label"></div>
+                                        <div class="item-input">
+                                            <div id="show"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </li>
@@ -257,9 +266,8 @@
                                         <div class="item-content">
                                             <div class="item-media"><i class="icon icon-form-comment"></i></div>
                                             <div class="item-inner">
-                                                <div class="item-title label">说点什么</div>
                                                 <div class="item-input">
-                                                    <textarea name="content"></textarea>
+                                                    <textarea name="content" placeholder="说点什么"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -307,6 +315,8 @@
             document.getElementById('department').textContent = decodeURI(storage.department);
         }
     }
+
+
 </script>
 
 </body>
