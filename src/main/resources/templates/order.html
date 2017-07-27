@@ -32,7 +32,7 @@
                             <li>
                                 <div class="item-content">
                                     <div class="item-inner" style="overflow:scroll">
-                                        <div class="item-title label">日期</div>
+                                        <div class="item-title label" style="width:50px">日期</div>
                                         <div class="item-input">
                                             <input id="orderDate" name="orderDate" type="date" th:value="${tomorrow}"
                                                    onchange="getDay()"/>
@@ -295,7 +295,7 @@
     function getDay() {
         var date = document.getElementById('orderDate').value;
         var day = new Date(date).getDay();
-        document.getElementById('show').innerText = "(星期" + days[day] + ")";
+        document.getElementById('show').innerText = "星期" + days[day];
     }
     function login_clk() {
         if (!window.localStorage) {
