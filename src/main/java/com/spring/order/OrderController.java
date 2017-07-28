@@ -44,36 +44,25 @@ public class OrderController {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
 
-        List<Booking> bookings1 = orderService.getOrdersByDate(sdf.parse(tomorrowStr));
-
         List<Booking> bookings = orderService.getByUserName(userName, department, sdf.parse(today()));
 
-        int lunchCount = 0;
-        int dinnerCount = 0;
-        int supperCount = 0;
+        List<Booking> bookings1 = orderService.getOrdersByDate(sdf.parse(today()));
 
+        List<DateCount> dateCounts = orderService.getCountByOrder(sdf.parse(tomorrowStr));
 
-        for (Booking booking : bookings1) {
-            lunchCount += booking.getLunch();
-            dinnerCount += booking.getDinner();
-            supperCount += booking.getSupper();
-        }
+        dateCounts.stream().forEach(p -> {
+            if (p.getDinnerCount() > 0) {
+                Long dinnerCount = p.getDinnerCount() + 3;
+                p.setDinnerCount(dinnerCount);
+            }
+        });
 
-        if (dinnerCount > 0) {
-            dinnerCount = dinnerCount + 3;
-        }
 
         model.addAttribute("bookings", bookings);
 
         model.addAttribute("tomorrow", tomorrowStr);
 
-        model.addAttribute("userCount", bookings1.size());
-
-        model.addAttribute("lunchCount", lunchCount);
-
-        model.addAttribute("dinnerCount", dinnerCount);
-
-        model.addAttribute("supperCount", supperCount);
+        model.addAttribute("userCount", dateCounts);
 
         model.addAttribute("tomorrowUser", bookings1);
 
@@ -147,7 +136,6 @@ public class OrderController {
 
         return "success";
     }
-
 
 
     @RequestMapping(value = "/sign", method = RequestMethod.GET)

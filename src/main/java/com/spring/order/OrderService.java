@@ -35,6 +35,11 @@ public class OrderService {
         return orderRepository.getOrderCount(orderDate);
     }
 
+    public List<DateCount> getCountByOrder(Date orderDate) {
+        return orderRepository.getCountByOrder(orderDate);
+    }
+
+
     public Booking getByUserNameAndOrderDate(String userName, String department, Date orderDate) {
         return orderRepository.findByUserNameAndDepartmentAndOrderDate(userName, department, orderDate);
     }

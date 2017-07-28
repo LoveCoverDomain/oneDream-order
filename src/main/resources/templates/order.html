@@ -129,36 +129,26 @@
                 </div>
             </div>
             <div id="tab3" class="tab">
-                <div class="content-block-title"><span th:text="${tomorrow}"></span>统计情况</div>
+                <div class="content-block-title">统计情况</div>
                 <div class="list-block">
                     <ul>
                         <li class="item-content">
-                            <div class="item-media"><i class="icon icon-f7"></i></div>
                             <div class="item-inner">
-                                <div class="item-title">点餐人数</div>
-                                <div class="item-after"><span th:text="${userCount}"/></div>
-                            </div>
-                        </li>
-                        <li class="item-content">
-                            <div class="item-media"><i class="icon icon-f7"></i></div>
-                            <div class="item-inner">
-                                <div class="item-title">午餐预定数量</div>
-                                <div class="item-after"><span th:text="${lunchCount}"/></div>
-                            </div>
-                        </li>
-                        <li class="item-content">
-                            <div class="item-media"><i class="icon icon-f7"></i></div>
-                            <div class="item-inner">
-                                <div class="item-title">晚餐预定数量</div>
-                                <div class="item-after"><span th:text="${dinnerCount}"/></div>
+                                <div class="item-title" style="width:40%">日期</div>
+                                <div class="item-after">午餐</div>
+                                <div class="item-after">晚餐</div>
+                                <div class="item-after">夜宵</div>
                             </div>
                         </li>
 
-                        <li class="item-content">
-                            <div class="item-media"><i class="icon icon-f7"></i></div>
+                        <li class="item-content" th:each="booking:${userCount}">
                             <div class="item-inner">
-                                <div class="item-title">夜宵预定数量</div>
-                                <div class="item-after"><span th:text="${supperCount}"/></div>
+                                <div class="item-title" style="width:40%">
+                                    <span th:text="${#dates.format(booking.date, 'yyyy-MM-dd')}"></span>
+                                </div>
+                                <div class="item-after"><span th:text="${booking.lunchCount}"></span></div>
+                                <div class="item-after"><span th:text="${booking.dinnerCount}"></span></div>
+                                <div class="item-after"><span th:text="${booking.supperCount}"></span></div>
                             </div>
                         </li>
                     </ul>
@@ -305,6 +295,7 @@
         var day = new Date(date).getDay();
         document.getElementById('show').innerText = "星期" + days[day];
     }
+
     function login_clk() {
         if (!window.localStorage) {
             alert("浏览器支持localstorage");
