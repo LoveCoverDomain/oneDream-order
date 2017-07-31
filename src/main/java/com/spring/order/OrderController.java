@@ -44,9 +44,9 @@ public class OrderController {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
 
-        List<Booking> bookings = orderService.getByUserName(userName, department, sdf.parse(today()));
+        List<Booking> bookings = orderService.getByUserName(userName, department, sdf.parse(yesterday()));
 
-        List<Booking> bookings1 = orderService.getOrdersByDate(sdf.parse(today()));
+        List<Booking> bookings1 = orderService.getOrdersByDate(sdf.parse(tomorrowStr));
 
         List<DateCount> dateCounts = orderService.getCountByOrder(sdf.parse(tomorrowStr));
 
@@ -389,6 +389,17 @@ public class OrderController {
         Date date = new Date();//取时间
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
+        date = calendar.getTime(); //这个时间就是日期往后推一天的结果
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = formatter.format(date);
+        return dateString;
+    }
+
+    private String yesterday() {
+        Date date = new Date();//取时间
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.add(calendar.DATE, -1);//把日期往后增加一天.整数往后推,负数往前移动
         date = calendar.getTime(); //这个时间就是日期往后推一天的结果
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = formatter.format(date);
