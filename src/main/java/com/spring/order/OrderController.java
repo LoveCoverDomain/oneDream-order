@@ -103,8 +103,8 @@ public class OrderController {
             return "login";
         }
 
-        if (isTodayAfterClock(16) && tomorrow().equals(orderDate)) {
-            model.addAttribute("text", "时间超过了下午4点，不能再点餐了");
+        if (isTodayAfterClock(16,30) && tomorrow().equals(orderDate)) {
+            model.addAttribute("text", "时间超过了下午4:30，不能再点餐了");
             model.addAttribute("button", "继续点餐");
 
             return "success";
@@ -414,20 +414,17 @@ public class OrderController {
         return hour;
     }
 
-    private boolean isTodayAfterClock(int clock) {
-
+    private boolean isTodayAfterClock(int hour,int minute) {
         Date date = new Date();//取时间
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = formatter.format(date);
-
         Calendar calendar = new GregorianCalendar();
         try {
             calendar.setTime(formatter.parse(dateString));
-            calendar.set(Calendar.HOUR, clock);
-            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.HOUR, hour);
+            calendar.set(Calendar.MINUTE, minute);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-
             if (System.currentTimeMillis() > calendar.getTimeInMillis()) {
                 return true;
             }
