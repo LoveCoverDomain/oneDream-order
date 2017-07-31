@@ -3,19 +3,17 @@ package com.spring.order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +40,9 @@ public class OrderController {
 
         String tomorrowStr = tomorrow();
 
+        String orderDateStr = tomorrow();
+
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
 
         List<Booking> bookings = orderService.getByUserName(userName, department, sdf.parse(yesterday()));
@@ -57,6 +58,17 @@ public class OrderController {
             }
         });
 
+        if (!CollectionUtils.isEmpty(bookings)) {
+            Booking booking = bookings.get(0);
+
+            Long orderDate = Math.max(sdf.parse(tomorrowStr).getTime(), sdf.parse(tomorrow(booking.getOrderDate())).getTime());
+
+            Date od = new Date(orderDate);
+
+            orderDateStr = sdf.format(od);
+        }
+
+        model.addAttribute("orderDate", orderDateStr);
 
         model.addAttribute("bookings", bookings);
 
@@ -103,7 +115,7 @@ public class OrderController {
             return "login";
         }
 
-        if (isTodayAfterClock(16,30) && tomorrow().equals(orderDate)) {
+        if (isTodayAfterClock(16, 30) && tomorrow().equals(orderDate)) {
             model.addAttribute("text", "时间超过了下午4:30，不能再点餐了");
             model.addAttribute("button", "继续点餐");
 
@@ -374,6 +386,16 @@ public class OrderController {
         return cookieMap;
     }
 
+    private String tomorrow(Date date) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.add(calendar.DATE, 1);//把日期往后增加一天.整数往后推,负数往前移动
+        date = calendar.getTime(); //这个时间就是日期往后推一天的结果
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = formatter.format(date);
+        return dateString;
+    }
+
     private String tomorrow() {
         Date date = new Date();//取时间
         Calendar calendar = new GregorianCalendar();
@@ -414,7 +436,7 @@ public class OrderController {
         return hour;
     }
 
-    private boolean isTodayAfterClock(int hour,int minute) {
+    private boolean isTodayAfterClock(int hour, int minute) {
         Date date = new Date();//取时间
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = formatter.format(date);
