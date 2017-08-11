@@ -1,5 +1,8 @@
-package com.spring.order;
+package com.spring.order.service;
 
+import com.spring.order.dao.OrderRepository;
+import com.spring.order.dto.Booking;
+import com.spring.order.dto.DateCount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

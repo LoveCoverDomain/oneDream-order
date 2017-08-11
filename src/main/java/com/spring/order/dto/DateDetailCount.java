@@ -1,4 +1,6 @@
-package com.spring.order;
+package com.spring.order.dto;
+
+import com.spring.order.dto.DateCount;
 
 /**
  * Created by lichundong on 2017/7/24.

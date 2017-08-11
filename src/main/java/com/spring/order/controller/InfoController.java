@@ -1,5 +1,10 @@
-package com.spring.order;
+package com.spring.order.controller;
 
+import com.spring.order.*;
+import com.spring.order.dto.Booking;
+import com.spring.order.dto.Sign;
+import com.spring.order.service.OrderService;
+import com.spring.order.service.SignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -116,6 +121,32 @@ public class InfoController {
 
         return "success";
     }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public String register(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
+        String userName = httpRequest.getParameter("userName");
+        String department = httpRequest.getParameter("department");
+
+        if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(department)) {
+            model.addAttribute("text", "用户名和部门不能为空");
+            model.addAttribute("button", "返回");
+            return "success";
+        }
+
+        String userNameCookie = Util.getParamByCookie(httpRequest, Util.cookieName_userName);
+        String departmentCookie = Util.getParamByCookie(httpRequest, Util.cookieName_department);
+
+
+        addCookie(httpServletResponse, Util.cookieName_userName, userName);
+        addCookie(httpServletResponse, Util.cookieName_department, department);
+
+
+        model.addAttribute("text", "个人信息修改成功");
+        model.addAttribute("button", "返回");
+
+        return "success";
+    }
+
 
     /**
      * 添加cookie

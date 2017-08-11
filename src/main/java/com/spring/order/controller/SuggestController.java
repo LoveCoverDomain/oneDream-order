@@ -1,5 +1,8 @@
-package com.spring.order;
+package com.spring.order.controller;
 
+import com.spring.order.dto.Suggest;
+import com.spring.order.dao.SuggestRepository;
+import com.spring.order.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

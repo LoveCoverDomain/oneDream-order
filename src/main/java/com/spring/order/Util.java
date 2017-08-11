@@ -12,6 +12,8 @@ import java.util.Map;
 public class Util {
     public static final String cookieName_userName = "userName";
     public static final String cookieName_department = "department";
+    public static final String cookieName_userID = "userId";
+
     /**
      * 根据名字获取cookie
      *

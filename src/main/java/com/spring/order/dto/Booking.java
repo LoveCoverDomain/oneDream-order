@@ -1,36 +1,31 @@
-package com.spring.order;
+package com.spring.order.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-public class Sign implements Serializable {
+public class Booking implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String userName;
     private String department;
-    private Date signTime;
-    private Date createTime;
+    private Date orderDate;
     private int lunch;
     private int dinner;
     private int supper;
 
-    public Sign() {
+    public Booking() {
     }
 
-    public Sign(String userName, String department, Date signTime, int lunch, int dinner, int supper) {
+    public Booking(String userName, String department, Date orderDate, int lunch, int dinner, int supper) {
         this.userName = userName;
         this.department = department;
-        this.signTime = signTime;
+        this.orderDate = orderDate;
         this.lunch = lunch;
         this.dinner = dinner;
         this.supper = supper;
-        this.createTime = new Date();
     }
 
     public int getId() {
@@ -57,12 +52,12 @@ public class Sign implements Serializable {
         this.department = department;
     }
 
-    public Date getSignTime() {
-        return signTime;
+    public Date getOrderDate() {
+        return orderDate;
     }
 
-    public void setSignTime(Date signTime) {
-        this.signTime = signTime;
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
     }
 
     public int getLunch() {
@@ -79,14 +74,6 @@ public class Sign implements Serializable {
 
     public void setDinner(int dinner) {
         this.dinner = dinner;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
     }
 
     public int getSupper() {

@@ -1,5 +1,12 @@
-package com.spring.order;
+package com.spring.order.controller;
 
+import com.spring.order.TimeUtil;
+import com.spring.order.dto.Booking;
+import com.spring.order.dto.DateCount;
+import com.spring.order.dto.DateDetailCount;
+import com.spring.order.dto.Sign;
+import com.spring.order.service.OrderService;
+import com.spring.order.service.SignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +18,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,14 +44,14 @@ public class OrderController {
             return "login";
         }
 
-        String tomorrowStr = tomorrow();
+        String tomorrowStr = TimeUtil.tomorrow();
 
-        String orderDateStr = tomorrow();
+        String orderDateStr = TimeUtil.tomorrow();
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
 
-        List<Booking> bookings = orderService.getByUserName(userName, department, sdf.parse(yesterday()));
+        List<Booking> bookings = orderService.getByUserName(userName, department, sdf.parse(TimeUtil.yesterday()));
 
         List<Booking> bookings1 = orderService.getOrdersByDate(sdf.parse(tomorrowStr));
 
@@ -61,7 +67,7 @@ public class OrderController {
         if (!CollectionUtils.isEmpty(bookings)) {
             Booking booking = bookings.get(0);
 
-            Long orderDate = Math.max(sdf.parse(tomorrowStr).getTime(), sdf.parse(tomorrow(booking.getOrderDate())).getTime());
+            Long orderDate = Math.max(sdf.parse(tomorrowStr).getTime(), sdf.parse(TimeUtil.tomorrow(booking.getOrderDate())).getTime());
 
             Date od = new Date(orderDate);
 
@@ -90,7 +96,7 @@ public class OrderController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
 
         String orderDate = httpRequest.getParameter("orderDate");
-        if (orderDate == null || sdf.parse(orderDate).before(sdf.parse(tomorrow()))) {
+        if (orderDate == null || sdf.parse(orderDate).before(sdf.parse(TimeUtil.tomorrow()))) {
             model.addAttribute("text", "只有明天及以后可点餐");
             model.addAttribute("button", "继续点餐");
 
@@ -115,7 +121,7 @@ public class OrderController {
             return "login";
         }
 
-        if (isTodayAfterClock(16, 30) && tomorrow().equals(orderDate)) {
+        if (TimeUtil.isTodayAfterClock(16, 30) && TimeUtil.tomorrow().equals(orderDate)) {
             model.addAttribute("text", "时间超过了下午4:30，不能再点餐了");
             model.addAttribute("button", "继续点餐");
 
@@ -159,7 +165,7 @@ public class OrderController {
             return "login";
         }
 
-        int hour = getNowOfHour();
+        int hour = TimeUtil.getNowOfHour();
         int lunch = 0;
         int dinner = 0;
         int supper = 0;
@@ -188,7 +194,7 @@ public class OrderController {
                 text = text + " 已签到!";
             } else {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
-                Sign sign = new Sign(userName, department, sdf.parse(today()), lunch, dinner, supper);
+                Sign sign = new Sign(userName, department, sdf.parse(TimeUtil.today()), lunch, dinner, supper);
                 signService.create(sign);
                 text = text + " 签到成功!";
             }
@@ -206,15 +212,15 @@ public class OrderController {
     private String statistics(Model model) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
 
-        List<DateCount> result = orderService.getCount(sdf.parse(today()));
+        List<DateCount> result = orderService.getCount(sdf.parse(TimeUtil.today()));
 
-        Map<Date, Long> signLunchMap = signService.getLunchCount(sdf.parse(today())).stream()
+        Map<Date, Long> signLunchMap = signService.getLunchCount(sdf.parse(TimeUtil.today())).stream()
                 .collect(Collectors.toMap(DateCount::getDate, DateCount::getCount));
 
-        Map<Date, Long> signDinnerMap = signService.getDinnerCount(sdf.parse(today())).stream()
+        Map<Date, Long> signDinnerMap = signService.getDinnerCount(sdf.parse(TimeUtil.today())).stream()
                 .collect(Collectors.toMap(DateCount::getDate, DateCount::getCount));
 
-        Map<Date, Long> signSupperMap = signService.getSupperCount(sdf.parse(today())).stream()
+        Map<Date, Long> signSupperMap = signService.getSupperCount(sdf.parse(TimeUtil.today())).stream()
                 .collect(Collectors.toMap(DateCount::getDate, DateCount::getCount));
 
         for (DateCount dateCount : result) {
@@ -343,7 +349,7 @@ public class OrderController {
     private boolean isSign(String userName, String department, int lunch, int dinner, int supper) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
         boolean signed = false;
-        List<Sign> signs = signService.getByUserNameAndSignTime(userName, department, sdf.parse(today()));
+        List<Sign> signs = signService.getByUserNameAndSignTime(userName, department, sdf.parse(TimeUtil.today()));
         for (Sign sign : signs) {
             if (sign.getLunch() == lunch && sign.getDinner() == dinner && sign.getSupper() == supper) {
                 signed = true;
@@ -386,76 +392,6 @@ public class OrderController {
         return cookieMap;
     }
 
-    private String tomorrow(Date date) {
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(date);
-        calendar.add(calendar.DATE, 1);//把日期往后增加一天.整数往后推,负数往前移动
-        date = calendar.getTime(); //这个时间就是日期往后推一天的结果
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String dateString = formatter.format(date);
-        return dateString;
-    }
-
-    private String tomorrow() {
-        Date date = new Date();//取时间
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(date);
-        calendar.add(calendar.DATE, 1);//把日期往后增加一天.整数往后推,负数往前移动
-        date = calendar.getTime(); //这个时间就是日期往后推一天的结果
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String dateString = formatter.format(date);
-        return dateString;
-    }
-
-    private String today() {
-        Date date = new Date();//取时间
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(date);
-        date = calendar.getTime(); //这个时间就是日期往后推一天的结果
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String dateString = formatter.format(date);
-        return dateString;
-    }
-
-    private String yesterday() {
-        Date date = new Date();//取时间
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(date);
-        calendar.add(calendar.DATE, -1);//把日期往后增加一天.整数往后推,负数往前移动
-        date = calendar.getTime(); //这个时间就是日期往后推一天的结果
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String dateString = formatter.format(date);
-        return dateString;
-    }
-
-    private int getNowOfHour() {
-        Date now = new Date();
-
-        int hour = now.getHours();
-
-        return hour;
-    }
-
-    private boolean isTodayAfterClock(int hour, int minute) {
-        Date date = new Date();//取时间
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String dateString = formatter.format(date);
-        Calendar calendar = new GregorianCalendar();
-        try {
-            calendar.setTime(formatter.parse(dateString));
-            calendar.set(Calendar.HOUR, hour);
-            calendar.set(Calendar.MINUTE, minute);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-            if (System.currentTimeMillis() > calendar.getTimeInMillis()) {
-                return true;
-            }
-            return false;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     private String getParam(HttpServletRequest httpRequest, String key) {
         String userName = httpRequest.getParameter(key);
