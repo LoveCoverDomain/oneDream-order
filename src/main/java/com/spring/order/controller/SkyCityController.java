@@ -32,6 +32,18 @@ public class SkyCityController {
 
         model.addAttribute("tomorrow", tomorrowStr);
 
-        return "skycity";
+        return "artist/skycity";
+    }
+
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    public String query(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
+
+        return "artist/skycity_query";
+    }
+
+    @RequestMapping(value = "/wode", method = RequestMethod.GET)
+    public String wode(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
+
+        return "artist/skycity_wode";
     }
 }
