@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>OneDream订餐</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css"/>
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css"/>
+</head>
+<body>
+
+<div class="page-group">
+    <!-- 单个page ,第一个.page默认被展示-->
+    <div class="page">
+        <!-- 标题栏 -->
+        <header class="bar bar-nav">
+            <h1 class="title">订餐小助手</h1>
+        </header>
+
+        <!-- 工具栏 -->
+        <nav class="bar bar-tab">
+            <a class="tab-item external" href="/artist/index">
+                <span class="icon icon-home"></span>
+                <span class="tab-label">订餐</span>
+            </a>
+            <a class="tab-item external" href="/artist/query">
+                <span class="icon icon-star"></span>
+                <span class="tab-label">查看</span>
+            </a>
+            <a class="tab-item external active" href="/artist/wode">
+                <span class="icon icon-settings"></span>
+                <span class="tab-label">我的</span>
+            </a>
+        </nav>
+
+        <!-- 这里是页面内容区 -->
+        <div class="content">
+            <div class="content-block">
+                <p><span th:text="${text}" style="color: red;"></span></p>
+            </div>
+
+            <div class="card">
+                <form id="updateForm" action="/artist/update" method="post" th:object="${user}">
+                    <input th:value="${user.id}" type="hidden" name="id"/>
+                    <div class="card-header">个人信息</div>
+
+                    <div class="card-content">
+                        <div class="list-block">
+                            <ul>
+                                <!-- Text inputs -->
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">手机</div>
+                                            <div class="item-input">
+                                                <input readonly="true" name="phone" type="text" placeholder="Your phone"
+                                                       th:value="${user.phone}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">姓名</div>
+                                            <div class="item-input">
+                                                <input id="name" type="text" name="name"
+                                                       th:value="${user.name}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-email"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">邮箱</div>
+                                            <div class="item-input">
+                                                <input name="email" type="email" placeholder="E-mail"
+                                                       th:value="${user.email}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-gender"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">性别</div>
+                                            <div class="item-input">
+                                                <select name="sex">
+                                                    <option value="男" th:selected="${user.sex}==男">男</option>
+                                                    <option value="女" th:selected="${user.sex}==女">女</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="align-top">
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title label">自我描述</div>
+                                            <div class="item-input">
+                                                <textarea name="description" placeholder="自我描述"
+                                                          th:field="${user.description}">
+                                                </textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer">
+                        <a href="#" class="link"></a>
+                        <a href="#" class="link" onclick="document.getElementById('updateForm').submit();return false">修改</a>
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <div class="card">
+                <form id="passwordUpdateFrom" action="/artist/updatePassword" method="post">
+                    <input th:value="${user.id}" type="hidden" name="id"/>
+
+                    <div class="card-header">修改密码</div>
+                    <div class="card-content">
+                        <div class="list-block">
+                            <ul>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-password"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">旧密码</div>
+                                            <div class="item-input">
+                                                <input name="oldPassword" type="password"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-password"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">新密码</div>
+                                            <div class="item-input">
+                                                <input name="newPassword" type="password"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-password"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title label">确认密码</div>
+                                            <div class="item-input">
+                                                <input name="newPassword1" type="password"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer">
+                        <a href="#" class="link"></a>
+                        <a href="#" class="link"
+                           onclick="document.getElementById('passwordUpdateFrom').submit();return false">提交</a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+
+</body>
+
+</html>

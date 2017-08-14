@@ -41,6 +41,10 @@
         <!-- 这里是页面内容区 -->
         <div class="content">
             <div class="content-block">
+                <p><span th:text="${text}" style="color: red;"></span></p>
+            </div>
+
+            <div class="content-block">
                 <form action="/artist/orderDo" method="post">
                     <div class="list-block">
                         <ul>
@@ -135,6 +139,9 @@
         var date = document.getElementById('orderDate').value;
         var day = new Date(date).getDay();
         document.getElementById('show').innerText = "星期" + days[day];
+        if (day == 6 || day == 0) {
+            document.getElementById('show').style.color = "red"
+        }
     }
 </script>
 </body>

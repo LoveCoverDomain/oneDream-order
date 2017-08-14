@@ -294,20 +294,10 @@
         var date = document.getElementById('orderDate').value;
         var day = new Date(date).getDay();
         document.getElementById('show').innerText = "星期" + days[day];
-    }
-
-    function login_clk() {
-        if (!window.localStorage) {
-            alert("浏览器支持localstorage");
-            return false;
-        } else {
-            var storage = window.localStorage;
-            document.getElementById('name').value = decodeURI(storage.name);
-            document.getElementById('department').textContent = decodeURI(storage.department);
+        if (day == 6 || day == 0) {
+            document.getElementById('show').style.color = "red"
         }
     }
-
-
 </script>
 
 </body>

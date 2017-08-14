@@ -6,4 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<UserDTO, Integer> {
     UserDTO findByPhone(Long phone);
+
+    UserDTO findById(Integer id);
+
 }
