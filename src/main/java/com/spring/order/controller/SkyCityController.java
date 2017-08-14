@@ -1,6 +1,7 @@
 package com.spring.order.controller;
 
 import com.spring.order.TimeUtil;
+import com.spring.order.Util;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,12 +24,9 @@ public class SkyCityController {
 
         String orderDateStr = TimeUtil.tomorrow();
 
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
 
-
         model.addAttribute("orderDate", orderDateStr);
-
 
         model.addAttribute("tomorrow", tomorrowStr);
 
@@ -37,6 +35,7 @@ public class SkyCityController {
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public String query(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
+        String userId = Util.getParamByCookie(httpRequest, Util.cookieName_userID);
 
         return "artist/skycity_query";
     }

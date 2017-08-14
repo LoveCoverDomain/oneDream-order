@@ -56,16 +56,16 @@ public class SignService {
         return signs;
     }
 
-    public List<DateCount> getLunchCount(Date signTime) {
-        return signRepository.getLunchCount(signTime);
+    public List<DateCount> getLunchCount(Date begin,Date end) {
+        return signRepository.getLunchCount(begin,end);
     }
 
-    public List<DateCount> getDinnerCount(Date signTime) {
-        return signRepository.getDinnerCount(signTime);
+    public List<DateCount> getDinnerCount(Date begin,Date end) {
+        return signRepository.getDinnerCount(begin,end);
     }
 
-    public List<DateCount> getSupperCount(Date signTime) {
-        return signRepository.getSupperCount(signTime);
+    public List<DateCount> getSupperCount(Date begin,Date end) {
+        return signRepository.getSupperCount(begin,end);
     }
 
 }

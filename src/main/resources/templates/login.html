@@ -14,7 +14,7 @@
 
     <script>
         function login_clk() {
-            var userName = document.getElementById('userName').value;
+            var name = document.getElementById('name').value;
             var department = document.getElementById('department').value;
 
             if (!window.localStorage) {
@@ -22,7 +22,7 @@
                 return false;
             } else {
                 var storage = window.localStorage;
-                storage.userName = encodeURI(userName);
+                storage.name = encodeURI(name);
                 storage.department = encodeURI(department);
             }
 
@@ -42,7 +42,7 @@
                         <div class="item-inner">
                             <div class="item-title label">姓名</div>
                             <div class="item-input">
-                                <input id="userName" type="text" name="userName" placeholder="Your name"/>
+                                <input id="name" type="text" name="name" placeholder="Your name"/>
                             </div>
                         </div>
                     </div>

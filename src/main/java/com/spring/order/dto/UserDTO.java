@@ -8,7 +8,7 @@ import javax.persistence.Id;
 /**
  * Created by lichundong on 2017/8/11.
  */
-//@Entity
+@Entity
 public class UserDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,9 +16,16 @@ public class UserDTO {
 
     private long phone;
 
-    private String userName;
+    private String name;
 
     private String passWord;
+
+    private String email;
+
+    private String sex;
+
+    private String description;
+
 
     public int getId() {
         return id;
@@ -36,12 +43,12 @@ public class UserDTO {
         this.phone = phone;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassWord() {
@@ -50,5 +57,29 @@ public class UserDTO {
 
     public void setPassWord(String passWord) {
         this.passWord = passWord;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

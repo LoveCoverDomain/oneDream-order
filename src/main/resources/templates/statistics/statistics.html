@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>OneDream每日统计</title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" href="//g.alicdn.com/sui/sui3/0.0.18/css/sui.min.css"/>
+
+    <style type="text/css">
+        <!--
+        body {
+            position: relative;
+        }
+
+        -->
+    </style>
+</head>
+<body data-spy="scroll" data-target=".table">
+
+<div class='container'>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">订餐助手统计</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/statistics">内部员工</a></li>
+                    <li><a href="#">天空之城</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+    <form class="form-inline" action="/statistics" method="post">
+
+        <div class="form-group input-daterange" data-toggle="datepicker" data-date-start-date='2017-07-24'>
+
+            <input type="text" name="begin" class="form-control input-date" placeholder="开始日期" th:value='${begin}'/>
+            -
+            <input type="text" name="end" class="form-control input-date" placeholder="结束日期" th:value='${end}'/>
+        </div>
+
+        <button type="submit" class="btn btn-lg btn-primary">查询</button>
+
+        <a href="/download" class="btn btn-default btn-lg active" role="button">导出</a>
+
+    </form>
+
+    <br/>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>日期</th>
+            <th>午餐预定数量</th>
+            <th>午餐签到数量</th>
+            <th>晚餐预定数量</th>
+            <th>晚餐签到数量</th>
+            <th>夜宵预定数量</th>
+            <th>夜宵签到数量</th>
+            <th>详情</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="booking:${result}">
+            <td><span th:text="${#dates.format(booking.date, 'yyyy-MM-dd')}"></span></td>
+            <td><span th:text="${booking.lunchCount}"></span></td>
+            <td><span th:text="${booking.signLunchCount}"></span></td>
+            <td><span th:text="${booking.dinnerCount}"></span></td>
+            <td><span th:text="${booking.signDinnerCount}"></span></td>
+            <td><span th:text="${booking.supperCount}"></span></td>
+            <td><span th:text="${booking.signSupperCount}"></span></td>
+            <td><a th:href="@{/detail(date=${#dates.format(booking.date, 'yyyy-MM-dd')})}" target="_Blank">详情</a>
+                <a th:href="@{/download(date=${#dates.format(booking.date, 'yyyy-MM-dd')})}"
+                   target="_Blank">导出具体名单</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+
+
+<script type="text/javascript" src="//g.alicdn.com/sj/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="//g.alicdn.com/sui/sui3/0.0.18/js/sui.min.js"></script>
+
+<script>
+    $("#datepicker").datepicker();
+
+</script>
+</body>
+</html>

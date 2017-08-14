@@ -34,8 +34,8 @@ public class OrderService {
         return bookings;
     }
 
-    public List<DateCount> getCount(Date orderDate) {
-        return orderRepository.getOrderCount(orderDate);
+    public List<DateCount> getCount(Date begin,Date end) {
+        return orderRepository.getOrderCount(begin,end);
     }
 
     public List<DateCount> getCountByOrder(Date orderDate) {

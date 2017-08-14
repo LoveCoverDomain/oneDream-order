@@ -208,19 +208,39 @@ public class OrderController {
         return "sign";
     }
 
-    @RequestMapping(value = "/statistics", method = RequestMethod.GET)
-    private String statistics(Model model) throws Exception {
+    @RequestMapping(value = "/statistics")
+    private String statistics(HttpServletRequest httpRequest, Model model) throws Exception {
+
+        String begin = httpRequest.getParameter("begin");
+        String end = httpRequest.getParameter("end");
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
 
-        List<DateCount> result = orderService.getCount(sdf.parse(TimeUtil.today()));
+        Date beginTime = sdf.parse("2017-07-24");
+        Date endTime = sdf.parse(TimeUtil.today());
+        try {
+            if (!StringUtils.isEmpty(begin)) {
+                beginTime = sdf.parse(begin);
+            }
+        } catch (Exception e) {
+        }
 
-        Map<Date, Long> signLunchMap = signService.getLunchCount(sdf.parse(TimeUtil.today())).stream()
+        try {
+            if (!StringUtils.isEmpty(end)) {
+                endTime = sdf.parse(end);
+            }
+        } catch (Exception e) {
+        }
+
+        List<DateCount> result = orderService.getCount(beginTime, endTime);
+
+        Map<Date, Long> signLunchMap = signService.getLunchCount(beginTime, endTime).stream()
                 .collect(Collectors.toMap(DateCount::getDate, DateCount::getCount));
 
-        Map<Date, Long> signDinnerMap = signService.getDinnerCount(sdf.parse(TimeUtil.today())).stream()
+        Map<Date, Long> signDinnerMap = signService.getDinnerCount(beginTime, endTime).stream()
                 .collect(Collectors.toMap(DateCount::getDate, DateCount::getCount));
 
-        Map<Date, Long> signSupperMap = signService.getSupperCount(sdf.parse(TimeUtil.today())).stream()
+        Map<Date, Long> signSupperMap = signService.getSupperCount(beginTime, endTime).stream()
                 .collect(Collectors.toMap(DateCount::getDate, DateCount::getCount));
 
         for (DateCount dateCount : result) {
@@ -238,8 +258,11 @@ public class OrderController {
         }
 
         model.addAttribute("result", result);
+        model.addAttribute("begin", sdf.format(beginTime));
+        model.addAttribute("end", sdf.format(endTime));
 
-        return "statistics";
+
+        return "statistics/statistics";
     }
 
 
@@ -343,7 +366,7 @@ public class OrderController {
 
         model.addAttribute("result", result);
 
-        return "detail";
+        return "statistics/detail";
     }
 
     private boolean isSign(String userName, String department, int lunch, int dinner, int supper) throws Exception {

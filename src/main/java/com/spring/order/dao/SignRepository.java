@@ -21,13 +21,13 @@ public interface SignRepository extends CrudRepository<Sign, Integer> {
     List<Sign> findBySignTimeAndSupper(Date signTime, int supper);
 
 
-    @Query("select new com.spring.order.dto.DateCount(a.signTime ,sum(a.dinner)) from Sign a where a.signTime >= '2017-07-24 00:00:00' and a.signTime <= ?1 and dinner=1 group by a.signTime order by a.signTime desc")
-    List<DateCount> getDinnerCount(Date signTime);
+    @Query("select new com.spring.order.dto.DateCount(a.signTime ,sum(a.dinner)) from Sign a where a.signTime >= ?1 and a.signTime <= ?2 and dinner=1 group by a.signTime order by a.signTime desc")
+    List<DateCount> getDinnerCount(Date begin, Date end);
 
 
-    @Query("select new com.spring.order.dto.DateCount(a.signTime ,sum(a.lunch)) from Sign a where a.signTime >= '2017-07-24 00:00:00' and a.signTime <= ?1 and lunch=1 group by a.signTime order by a.signTime desc ")
-    List<DateCount> getLunchCount(Date signTime);
+    @Query("select new com.spring.order.dto.DateCount(a.signTime ,sum(a.lunch)) from Sign a where a.signTime >= ?1 and a.signTime <= ?2 and lunch=1 group by a.signTime order by a.signTime desc ")
+    List<DateCount> getLunchCount(Date begin, Date end);
 
-    @Query("select new com.spring.order.dto.DateCount(a.signTime ,sum(a.supper)) from Sign a where a.signTime >= '2017-07-24 00:00:00' and a.signTime <= ?1 and supper=1 group by a.signTime order by a.signTime desc ")
-    List<DateCount> getSupperCount(Date signTime);
+    @Query("select new com.spring.order.dto.DateCount(a.signTime ,sum(a.supper)) from Sign a where a.signTime >= ?1 and a.signTime <= ?2 and supper=1 group by a.signTime order by a.signTime desc ")
+    List<DateCount> getSupperCount(Date begin, Date end);
 }
