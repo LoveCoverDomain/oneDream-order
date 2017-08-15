@@ -1,6 +1,7 @@
 package com.spring.order.controller;
 
 import com.spring.order.TimeUtil;
+import com.spring.order.dao.ArtistOrderRepository;
 import com.spring.order.dto.Booking;
 import com.spring.order.dto.DateCount;
 import com.spring.order.dto.DateDetailCount;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +36,8 @@ public class OrderController {
     private OrderService orderService;
     @Autowired
     private SignService signService;
+    @Autowired
+    private ArtistOrderRepository artistOrderRepository;
 
     @RequestMapping(value = "/order", method = RequestMethod.GET)
     public String index(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
@@ -57,11 +61,24 @@ public class OrderController {
 
         List<DateCount> dateCounts = orderService.getCountByOrder(sdf.parse(tomorrowStr));
 
+        List<DateCount> artistDateCounts = artistOrderRepository.getOrderCount(sdf.parse(tomorrowStr), TimeUtil.afterToday(20));
+
+        Map<Date, DateCount> artistDateMap = artistDateCounts.stream().collect(Collectors.toMap(DateCount::getDate, Function.identity()
+        ));
+
         dateCounts.stream().forEach(p -> {
             if (p.getDinnerCount() > 0) {
                 Long dinnerCount = p.getDinnerCount() + 3;
                 p.setDinnerCount(dinnerCount);
             }
+
+            DateCount artist = artistDateMap.get(p.getDate());
+            if (artist != null) {
+                p.setLunchCount(p.getLunchCount() + artist.getLunchCount());
+                p.setDinnerCount(p.getDinnerCount() + artist.getDinnerCount());
+                p.setSupperCount(p.getSupperCount() + artist.getSupperCount());
+            }
+
         });
 
         if (!CollectionUtils.isEmpty(bookings)) {

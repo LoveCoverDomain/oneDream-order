@@ -33,83 +33,102 @@
                 <a href="#tab3" class="tab-link button">全部</a>
             </div>
 
-            <div class="content-block">
-                <div class="tabs">
-                    <div id="tab1" class="tab active">
-                        <div class="content-block">
-                            <div class="list-block media-list inset">
-                                <ul>
-                                    <li th:each="booking:${sign}">
-                                        <a th:href="@{/artist/signDo(userId=${booking.userId})}"
-                                           class="item-link item-content">
-                                            <div class="item-inner">
-                                                <div class="item-title-row">
-                                                    <div class="item-title"><span th:text="${booking.name}"/>
-                                                        &nbsp;<span th:text="${booking.sex}"/></div>
-                                                </div>
-                                                <div class="item-subtitle"><span th:text="${booking.phone}"/></div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+            <div class="tabs">
+                <div id="tab1" class="tab active">
+                    <div class="list-block media-list inset">
+                        <ul>
+                            <li th:each="booking:${sign}">
+                                <a th:href="@{/artist/signDo(userId=${booking.userId})}"
+                                   class="item-link item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title-row">
+                                            <div class="item-title"><span th:text="${booking.name}"/>
+                                                &nbsp;<span th:text="${booking.sex}"/></div>
+                                        </div>
+                                        <div class="item-subtitle"><span th:text="${booking.phone}"/></div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
+                </div>
 
 
-                    <div id="tab2" class="tab">
-                        <div class="content-block">
-                            <div class="list-block media-list inset">
-                                <ul>
-                                    <li th:each="booking:${signed}">
-                                        <a th:href="@{/artist/unSignDo(userId=${booking.userId})}"
-                                           class="item-link item-content">
-                                            <div class="item-inner">
-                                                <div class="item-title-row">
-                                                    <div class="item-title"><span th:text="${booking.name}"/>
-                                                        &nbsp;<span th:text="${booking.sex}"/></div>
-                                                </div>
-                                                <div class="item-subtitle"><span th:text="${booking.phone}"/></div>
+                <div id="tab2" class="tab">
+                    <div class="list-block media-list inset">
+                        <ul>
+                            <li th:each="booking:${signed}">
+                                <a th:href="@{/artist/unSignDo(userId=${booking.userId})}"
+                                   class="item-link item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title-row">
+                                            <div class="item-title">
+                                                <span th:text="${booking.name}"/>&nbsp;<span
+                                                    th:text="${booking.sex}"/>
                                             </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                                        </div>
+                                        <div class="item-subtitle"><span th:text="${booking.phone}"/></div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
+                </div>
 
 
-                    <div id="tab3" class="tab">
-                        <div class="content-block">
-                            <div class="list-block media-list inset">
-                                <ul>
-                                    <li th:each="booking:${all}">
-                                        <a class="item-link item-content" >
-                                            <div class="item-inner">
-                                                <div class="item-title-row" >
-                                                    <div class="item-title"><span th:text="${booking.name}"/>
-                                                        &nbsp;<span th:text="${booking.sex}"/></div>
-                                                </div>
-                                                <div class="item-subtitle"><span th:text="${booking.phone}"/></div>
+                <div id="tab3" class="tab">
+                    <div class="list-block media-list inset">
+                        <ul>
+                            <li th:each="booking:${all}">
+
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title-row">
+                                            <div class="item-title">
+                                                <span th:text="${booking.name}"/>&nbsp;<span
+                                                    th:text="${booking.sex}"/>
                                             </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                                        </div>
+
+                                        <div class="item-subtitle"><span th:text="${booking.phone}"/></div>
+
+                                    </div>
+                                </div>
+
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-
 
         </div>
 
     </div>
 </div>
 
+<form method="post" id="signForm">
+    <input type="hidden" name="userId" id="userId"/>
+</form>
+
+
 <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+
+<script>
+    $(document).on('click', 'a.item-link', function () {
+
+        document.getElementById("signForm").action = this.pathname;
+
+        var str = this.href.split("=");
+        document.getElementById("userId").value = str[1];
+
+        document.getElementById("signForm").submit();
+
+        this.href = "javascript:void(0);";
+
+    });
+</script>
 
 </body>
 

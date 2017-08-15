@@ -31,6 +31,18 @@ public class TimeUtil {
         return dateString;
     }
 
+    public static Date afterToday(int offset) throws Exception {
+        Date date = new Date();//取时间
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.add(calendar.DATE, offset);//把日期往后增加一天.整数往后推,负数往前移动
+        date = calendar.getTime(); //这个时间就是日期往后推一天的结果
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = formatter.format(date);
+        return formatter.parse(dateString);
+
+    }
+
     public static String today() {
         Date date = new Date();//取时间
         Calendar calendar = new GregorianCalendar();
@@ -51,6 +63,7 @@ public class TimeUtil {
         String dateString = formatter.format(date);
         return dateString;
     }
+
 
     public static int getNowOfHour() {
         Date now = new Date();

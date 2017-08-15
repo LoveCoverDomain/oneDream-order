@@ -269,7 +269,7 @@ public class SkyCityController {
         }
     }
 
-    @RequestMapping(value = "/signDo", method = RequestMethod.GET)
+    @RequestMapping(value = "/signDo", method = RequestMethod.POST)
     public String signDo(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) {
         try {
             sign(httpRequest, 1);
@@ -285,7 +285,7 @@ public class SkyCityController {
         }
     }
 
-    @RequestMapping(value = "/unSignDo", method = RequestMethod.GET)
+    @RequestMapping(value = "/unSignDo", method = RequestMethod.POST)
     public String unSignDo(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) {
         try {
             sign(httpRequest, 0);
