@@ -13,18 +13,25 @@ public class ArtistBooking implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String name;
+    private long phone;
+    private String sex;
     private int userId;
     private Date orderDate;
     private int lunch;
     private int dinner;
     private int supper;
+    private int signLunch;
+    private int signDinner;
+    private int signSupper;
 
     public ArtistBooking() {
     }
 
-    public ArtistBooking(int userId, String name, Date orderDate, int lunch, int dinner, int supper) {
+    public ArtistBooking(int userId, String name, long phone, String sex, Date orderDate, int lunch, int dinner, int supper) {
         this.userId = userId;
         this.name = name;
+        this.phone = phone;
+        this.sex = sex;
         this.orderDate = orderDate;
         this.lunch = lunch;
         this.dinner = dinner;
@@ -85,5 +92,45 @@ public class ArtistBooking implements Serializable {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public int getSignLunch() {
+        return signLunch;
+    }
+
+    public void setSignLunch(int signLunch) {
+        this.signLunch = signLunch;
+    }
+
+    public int getSignDinner() {
+        return signDinner;
+    }
+
+    public void setSignDinner(int signDinner) {
+        this.signDinner = signDinner;
+    }
+
+    public int getSignSupper() {
+        return signSupper;
+    }
+
+    public void setSignSupper(int signSupper) {
+        this.signSupper = signSupper;
+    }
+
+    public long getPhone() {
+        return phone;
+    }
+
+    public void setPhone(long phone) {
+        this.phone = phone;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 }

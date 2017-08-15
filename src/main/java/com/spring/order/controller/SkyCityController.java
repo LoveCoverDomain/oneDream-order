@@ -5,7 +5,9 @@ import com.spring.order.Util;
 import com.spring.order.dao.ArtistOrderRepository;
 import com.spring.order.dao.UserRepository;
 import com.spring.order.dto.ArtistBooking;
+import com.spring.order.dto.Sign;
 import com.spring.order.dto.UserDTO;
+import com.spring.order.service.ArtistOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lichundong on 2017/8/11.
@@ -31,6 +35,9 @@ public class SkyCityController {
 
     @Autowired
     private ArtistOrderRepository artistOrderRepository;
+
+    @Autowired
+    private ArtistOrderService artistOrderService;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) {
@@ -95,6 +102,78 @@ public class SkyCityController {
         }
     }
 
+    @RequestMapping(value = "/signQuery", method = RequestMethod.GET)
+    public String signQuery(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+
+            List<ArtistBooking> artistBookings = artistOrderRepository.findByOrderDate(sdf.parse(TimeUtil.today()));
+
+            List<ArtistBooking> result = new ArrayList<>();
+
+            List<ArtistBooking> sign = new ArrayList<>();
+
+            List<ArtistBooking> signed = new ArrayList<>();
+
+
+            int hour = TimeUtil.getNowOfHour();
+            int lunch = 0;
+            int dinner = 0;
+            int supper = 0;
+
+            String what = "";
+            String text = "";
+
+
+            if (hour >= 10 && hour <= 14) {
+                lunch = 1;
+                what = "午餐";
+                result = artistBookings.stream().filter(p -> p.getLunch() == 1).collect(Collectors.toList());
+                sign = result.stream().filter(p -> p.getSignLunch() == 0).collect(Collectors.toList());
+                signed = result.stream().filter(p -> p.getSignLunch() == 1).collect(Collectors.toList());
+
+            }
+            if (hour >= 16 && hour <= 19) {
+                dinner = 1;
+                what = "晚餐";
+                result = artistBookings.stream().filter(p -> p.getDinner() == 1).collect(Collectors.toList());
+                sign = result.stream().filter(p -> p.getSignDinner() == 0).collect(Collectors.toList());
+                signed = result.stream().filter(p -> p.getSignDinner() == 1).collect(Collectors.toList());
+            }
+
+            if (hour >= 21) {
+                supper = 1;
+                what = "夜宵";
+                result = artistBookings.stream().filter(p -> p.getSupper() == 1).collect(Collectors.toList());
+                sign = result.stream().filter(p -> p.getSignSupper() == 0).collect(Collectors.toList());
+                signed = result.stream().filter(p -> p.getSignSupper() == 1).collect(Collectors.toList());
+            }
+
+            if (lunch == 0 && dinner == 0 && supper == 0) {
+                text = " 不在用餐时间。午餐：10点-14点 晚餐：16点-20点 夜宵：21点-24点";
+            }
+
+
+            model.addAttribute("all", result);
+
+            model.addAttribute("sign", sign);
+
+            model.addAttribute("signed", signed);
+
+            model.addAttribute("what", TimeUtil.today() + what);
+
+            model.addAttribute("text", text);
+
+
+            return "artist/skycity_sign_query";
+
+        } catch (Exception e) {
+            model.addAttribute("error", "哎呀服务器出错了");
+
+            return "artist/skycity_sign_query";
+        }
+    }
+
     @RequestMapping(value = "/wode", method = RequestMethod.GET)
     public String wode(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) {
         try {
@@ -104,7 +183,7 @@ public class SkyCityController {
                 return "artist/skycity_wode";
             }
 
-            model.addAttribute("user",  userDTO);
+            model.addAttribute("user", userDTO);
 
             return "artist/skycity_logined";
 
@@ -156,13 +235,18 @@ public class SkyCityController {
 
             try {
                 if (bookingDb != null) {
+                    bookingDb.setName(userDTO.getName());
+                    bookingDb.setPhone(userDTO.getPhone());
+                    bookingDb.setSex(userDTO.getSex());
                     bookingDb.setLunch(lunch);
                     bookingDb.setDinner(dinner);
                     bookingDb.setSupper(supper);
+
                     artistOrderRepository.save(bookingDb);
 
                 } else {
-                    ArtistBooking booking = new ArtistBooking(userDTO.getId(), userDTO.getName(), sdf.parse(orderDate), lunch, dinner, supper);
+                    ArtistBooking booking = new ArtistBooking(userDTO.getId(), userDTO.getName(), userDTO.getPhone(), userDTO.getSex(), sdf.parse(orderDate), lunch, dinner, supper);
+
                     artistOrderRepository.save(booking);
                 }
 
@@ -179,9 +263,63 @@ public class SkyCityController {
             return index(httpRequest, httpServletResponse, model);
 
         } catch (Exception e) {
+            e.printStackTrace();
             model.addAttribute("text", "哎呀服务器出错了");
             return "artist/success";
         }
+    }
+
+    @RequestMapping(value = "/signDo", method = RequestMethod.GET)
+    public String signDo(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) {
+        try {
+            sign(httpRequest, 1);
+
+            httpServletResponse.sendRedirect("/artist/signQuery");
+
+            return "artist/success";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "哎呀服务器出错了");
+            return signQuery(httpRequest, httpServletResponse, model);
+        }
+    }
+
+    @RequestMapping(value = "/unSignDo", method = RequestMethod.GET)
+    public String unSignDo(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) {
+        try {
+            sign(httpRequest, 0);
+
+            httpServletResponse.sendRedirect("/artist/signQuery");
+
+            return "artist/success";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "哎呀服务器出错了");
+            return signQuery(httpRequest, httpServletResponse, model);
+        }
+    }
+
+    private void sign(HttpServletRequest httpRequest, int sign) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+
+        String userId = httpRequest.getParameter("userId");
+
+        int hour = TimeUtil.getNowOfHour();
+
+        if (hour >= 10 && hour <= 14) {
+            artistOrderService.signLunch(Integer.valueOf(userId), sdf.parse(TimeUtil.today()), sign);
+        }
+
+        if (hour >= 16 && hour <= 19) {
+            artistOrderService.signDinner(Integer.valueOf(userId), sdf.parse(TimeUtil.today()), sign);
+        }
+
+        if (hour >= 21) {
+            artistOrderService.signSupper(Integer.valueOf(userId), sdf.parse(TimeUtil.today()), sign);
+        }
+
     }
 
     private UserDTO getUserDTO(HttpServletRequest httpRequest) {
