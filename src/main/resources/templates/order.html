@@ -300,12 +300,11 @@
         document.getElementById('show').innerText = "星期" + days[day];
         if (day == 6 || day == 0) {
             document.getElementById('show').style.color = "red"
+        } else {
+            document.getElementById('show').style.color = "green"
         }
     }
 
-    $(document).on('click', '#btSelectDate', function () {
-        $("#orderDate").trigger("focus");
-    });
 </script>
 
 </body>
