@@ -171,7 +171,7 @@
                         <li class="item-content" th:each="booking:${tomorrowUser}">
                             <div class="item-inner">
                                 <div class="item-title" style="width:55%">
-                                    <span th:text="${booking.name}"/>-<span th:text="${booking.department}"/>
+                                    <span th:text="${booking.userName}"/>-<span th:text="${booking.department}"/>
                                 </div>
                                 <div class="item-after"><span th:text="${booking.lunch}"></span></div>
                                 <div class="item-after"><span th:text="${booking.dinner}"></span></div>
@@ -195,8 +195,8 @@
                                             <div class="item-inner">
                                                 <div class="item-title label">姓名</div>
                                                 <div class="item-input">
-                                                    <input id="name" type="text" name="name"
-                                                           th:value="${name}"/>
+                                                    <input id="name" type="text" name="userName"
+                                                           th:value="${userName}"/>
                                                 </div>
                                             </div>
                                         </div>
