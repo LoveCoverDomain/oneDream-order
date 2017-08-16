@@ -138,8 +138,8 @@ public class OrderController {
             return "login";
         }
 
-        if (TimeUtil.isTodayAfterClock(16, 30) && TimeUtil.tomorrow().equals(orderDate)) {
-            model.addAttribute("text", "时间超过了下午4:30，不能再点餐了");
+        if (TimeUtil.isTodayAfterClock(18, 00) && TimeUtil.tomorrow().equals(orderDate)) {
+            model.addAttribute("text", "已经超过了下午6:00，不能再点餐了");
             model.addAttribute("button", "继续点餐");
 
             return "success";
