@@ -55,9 +55,9 @@ public class OrderController {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
 
-        List<Booking> bookings = orderService.getByUserName(userName, department, sdf.parse(TimeUtil.yesterday()));
+        List<Booking> userBookings = orderService.getByUserName(userName, department, sdf.parse(TimeUtil.yesterday()));
 
-        List<Booking> bookings1 = orderService.getOrdersByDate(sdf.parse(tomorrowStr));
+        List<Booking> tomorrowBookingUsers = orderService.getOrdersByDate(sdf.parse(tomorrowStr));
 
         List<DateCount> dateCounts = orderService.getCountByOrder(sdf.parse(tomorrowStr));
 
@@ -81,8 +81,8 @@ public class OrderController {
 
         });
 
-        if (!CollectionUtils.isEmpty(bookings)) {
-            Booking booking = bookings.get(0);
+        if (!CollectionUtils.isEmpty(userBookings)) {
+            Booking booking = userBookings.get(0);
 
             Long orderDate = Math.max(sdf.parse(tomorrowStr).getTime(), sdf.parse(TimeUtil.tomorrow(booking.getOrderDate())).getTime());
 
@@ -91,15 +91,20 @@ public class OrderController {
             orderDateStr = sdf.format(od);
         }
 
+        if (!tomorrowBooked(userBookings) && !model.containsAttribute("text")) {
+            String prompt = "您还未订明天(" + TimeUtil.tomorrow() + ")的餐，如需要请及时订餐";
+            model.addAttribute("prompt", prompt);
+        }
+
         model.addAttribute("orderDate", orderDateStr);
 
-        model.addAttribute("bookings", bookings);
+        model.addAttribute("bookings", userBookings);
 
         model.addAttribute("tomorrow", tomorrowStr);
 
         model.addAttribute("userCount", dateCounts);
 
-        model.addAttribute("tomorrowUser", bookings1);
+        model.addAttribute("tomorrowUser", tomorrowBookingUsers);
 
         model.addAttribute("userName", userName);
 
@@ -114,10 +119,9 @@ public class OrderController {
 
         String orderDate = httpRequest.getParameter("orderDate");
         if (orderDate == null || sdf.parse(orderDate).before(sdf.parse(TimeUtil.tomorrow()))) {
-            model.addAttribute("text", "只有明天及以后可点餐");
-            model.addAttribute("button", "继续点餐");
+            model.addAttribute("text", "只有明天及以后可订餐");
 
-            return "success";
+            return index(httpRequest, httpServletResponse, model);
         }
 
         String lunchStr = httpRequest.getParameter("lunch");
@@ -139,10 +143,10 @@ public class OrderController {
         }
 
         if (TimeUtil.isTodayAfterClock(18, 00) && TimeUtil.tomorrow().equals(orderDate)) {
-            model.addAttribute("text", "已经超过了下午6:00，不能再点餐了");
+            model.addAttribute("text", "已经超过下午6:00，不能订明天的餐了。后天及以后是可订的");
             model.addAttribute("button", "继续点餐");
 
-            return "success";
+            return index(httpRequest, httpServletResponse, model);
         }
 
         Booking bookingDb = orderService.getByUserNameAndOrderDate(userName, department, sdf.parse(orderDate));
@@ -159,22 +163,23 @@ public class OrderController {
             }
         } catch (Exception e) {
             if (e.getMessage().contains("uk_user_orderdate")) {
-                model.addAttribute("text", "订餐成功");
-                model.addAttribute("button", "返回,点击\"查看\"可查阅订餐结果");
-                return "success";
+                model.addAttribute("text", "订餐成功！还可继续订餐");
+                return index(httpRequest, httpServletResponse, model);
             }
             throw e;
         }
+        String text = "订餐成功！" + orderDate + "之后也可预订";
 
-        model.addAttribute("text", "订餐成功");
-        model.addAttribute("button", "返回,点击\"查看\"可查阅订餐结果");
+        model.addAttribute("text", text);
 
-        return "success";
+        return index(httpRequest, httpServletResponse, model);
     }
 
 
     @RequestMapping(value = "/sign", method = RequestMethod.GET)
     public String sign(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, Model model) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+
         String userName = getParamByCookie(httpRequest, cookieName_userName);
         String department = getParamByCookie(httpRequest, cookieName_department);
 
@@ -201,7 +206,6 @@ public class OrderController {
             text = "夜宵";
         }
 
-
         if (lunch == 0 && dinner == 0 && supper == 0) {
             text = " 不在用餐时间，无法签到。午餐：10点-14点 晚餐：16点-20点 夜宵：21点-24点";
         } else {
@@ -210,13 +214,18 @@ public class OrderController {
             if (signed) {
                 text = text + " 已签到!";
             } else {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
                 Sign sign = new Sign(userName, department, sdf.parse(TimeUtil.today()), lunch, dinner, supper);
                 signService.create(sign);
                 text = text + " 签到成功!";
             }
         }
 
+        List<Booking> userBookings = orderService.getByUserName(userName, department, sdf.parse(TimeUtil.yesterday()));
+
+        if (!tomorrowBooked(userBookings) && !model.containsAttribute("text")) {
+            String prompt = "您还未订明天(" + TimeUtil.tomorrow() + ")的餐，如需要请及时订餐";
+            model.addAttribute("prompt", prompt);
+        }
 
         model.addAttribute("text", text);
         model.addAttribute("userName", userName);
@@ -384,6 +393,19 @@ public class OrderController {
         model.addAttribute("result", result);
 
         return "statistics/detail";
+    }
+
+    private boolean tomorrowBooked(List<Booking> userBookings) throws Exception {
+        Date tomorrow = TimeUtil.getTomorrow();
+        boolean tomorrowBooked = false;
+        for (Booking booking : userBookings) {
+            if (booking.getOrderDate().equals(tomorrow) &&
+                    (booking.getLunch() == 1 || booking.getDinner() == 1 || booking.getSupper() == 1)) {
+                tomorrowBooked = true;
+                break;
+            }
+        }
+        return tomorrowBooked;
     }
 
     private boolean isSign(String userName, String department, int lunch, int dinner, int supper) throws Exception {

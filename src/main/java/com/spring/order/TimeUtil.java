@@ -31,6 +31,19 @@ public class TimeUtil {
         return dateString;
     }
 
+    public static Date getTomorrow() {
+        Date date = new Date();//取时间
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.add(calendar.DATE, 1);//把日期往后增加一天.整数往后推,负数往前移动
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
+    }
+
     public static Date afterToday(int offset) throws Exception {
         Date date = new Date();//取时间
         Calendar calendar = new GregorianCalendar();

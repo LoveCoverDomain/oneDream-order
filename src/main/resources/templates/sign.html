@@ -38,9 +38,24 @@
                 <span th:text="${name}"></span> <span th:text="${text}"></span>
             </h2>
         </div>
+
+
     </div>
+
     <div class="row">
-        <div class="col-50"><a onClick="custom_close()" href="#" class="button button-big button-fill button-danger ">关闭</a></div>
+
+        <div class="col-100 content-padded">
+            <h2>
+                <span th:text="${prompt}" style="color: red;"></span>
+            </h2>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-50"><a onClick="custom_close()" href="#"
+                               class="button button-big button-fill button-danger ">关闭</a></div>
 
         <div class="col-50"><a href="/order" class="button button-big button-fill button-success">进入点餐系统</a></div>
     </div>

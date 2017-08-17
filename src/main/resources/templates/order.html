@@ -24,6 +24,13 @@
     <div class="content-block">
         <div class="tabs">
             <div id="tab1" class="tab active">
+                <div class="content-block">
+                    <p><span th:text="${text}" style="color: red;"></span></p>
+                </div>
+                <div class="content-block">
+                    <p><span th:text="${prompt}" style="color: red;"></span></p>
+                </div>
+
                 <form action="/orderDo" method="post">
                     <div class="list-block">
                         <ul>
