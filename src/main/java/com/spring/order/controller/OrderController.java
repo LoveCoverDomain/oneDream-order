@@ -396,11 +396,11 @@ public class OrderController {
     }
 
     private boolean tomorrowBooked(List<Booking> userBookings) throws Exception {
-        Date tomorrow = TimeUtil.getTomorrow();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+        String tomorrow = TimeUtil.tomorrow();
         boolean tomorrowBooked = false;
         for (Booking booking : userBookings) {
-            if (booking.getOrderDate().equals(tomorrow) &&
-                    (booking.getLunch() == 1 || booking.getDinner() == 1 || booking.getSupper() == 1)) {
+            if (sdf.format(booking.getOrderDate()).equals(tomorrow)) {
                 tomorrowBooked = true;
                 break;
             }
